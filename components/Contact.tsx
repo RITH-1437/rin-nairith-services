@@ -48,7 +48,9 @@ const emptyForm: FormData = {
 export default function Contact() {
   const [form, setForm] = useState<FormData>(emptyForm);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
-  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [error, setError] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
 
   const setField = (field: keyof FormData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -69,17 +71,46 @@ export default function Contact() {
     return Object.keys(next).length === 0;
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    setStatus("submitting");
 
-    // First version: simulate submission and show success state.
-    // Connect to an email service / backend API here when ready.
-    window.setTimeout(() => {
+    setStatus("submitting");
+    setError(null);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          projectType: form.projectType,
+          budget: form.budget,
+          description: form.description,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({ ok: false }));
+
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error ?? "Something went wrong sending your message.");
+      }
+
       setStatus("success");
+      setWarning(data.warning ?? null);
       setForm(emptyForm);
-    }, 900);
+    } catch (err) {
+      console.error("Contact form error:", err);
+      setStatus("error");
+      setWarning(null);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Could not send your message. Please try again or reach me directly."
+      );
+    }
   };
 
   const fieldClass = (hasError: boolean) =>
@@ -125,9 +156,17 @@ export default function Contact() {
                   Thanks for reaching out! I'll get back to you as soon as
                   possible. Meanwhile, you can message me directly.
                 </p>
+                {warning ? (
+                  <p className="mt-3 max-w-sm rounded-md border border-amber-400/50 bg-amber-400/10 px-3 py-2 text-xs text-amber-300">
+                    Note: {warning}
+                  </p>
+                ) : null}
                 <button
                   type="button"
-                  onClick={() => setStatus("idle")}
+                  onClick={() => {
+                    setStatus("idle");
+                    setWarning(null);
+                  }}
                   className="btn-secondary mt-6"
                 >
                   Send Another Message
@@ -280,6 +319,15 @@ export default function Contact() {
                     </p>
                   ) : null}
                 </div>
+
+                {error ? (
+                  <div
+                    role="alert"
+                    className="rounded-md border border-red-500/50 bg-red-500/10 px-3.5 py-2.5 text-sm text-red-400"
+                  >
+                    {error}
+                  </div>
+                ) : null}
 
                 <button
                   type="submit"

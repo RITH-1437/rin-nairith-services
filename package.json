@@ -1,8 +1,8 @@
 {
-  "name": "maysa-services",
+  "name": "rin-nairith-services",
   "version": "1.0.0",
   "private": true,
-  "description": "Personal Full Stack Web Developer services website",
+  "description": "RIN Nairith — Software Developer services website",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
