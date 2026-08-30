@@ -4,11 +4,11 @@ A professional, technical, dark/light-themed landing page for a Software Develop
 
 ## 1. Project Overview
 
-A single-page services website with a subtle animated network background and a clean black + lime + white + green identity. It presents who I am (RIN Nairith — Software Developer), the services I provide, real projects, starting prices, and multiple ways to get in contact.
+A single-page services website with a subtle animated network background and a clean black + lime + white + green identity. It presents who I am (RIN Nairith — Software Developer), the services I provide, real projects, starting prices, and multiple ways to get in contact. Visitors can submit a project inquiry directly from the site.
 
 ## 2. Tech Stack
 
-- Next.js (App Router)
+- Next.js 16 (App Router, Turbopack)
 - React
 - TypeScript
 - Tailwind CSS
@@ -27,7 +27,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). If the dev server warns about a "Slow filesystem", that is expected when the project lives on a network/Windows mount — it does not affect the build or production.
 
 ## 5. Production Build
 
@@ -38,27 +38,40 @@ npm start
 
 ## 6. Environment Variables
 
-Create a `.env.local` file from the example:
+Create a `.env` file from the example:
 
 ```
-# Public site URL (used for SEO, sitemap, and social sharing)
-NEXT_PUBLIC_SITE_URL=https://rin-nairith.vercel.app
+# Telegram delivery (bot token + your personal chat ID)
+TELEGRAM_BOT_TOKEN=123456:ABC-DEF...
+TELEGRAM_CHAT_ID=7523303813
 
-# Default contact destination email
-NEXT_PUBLIC_CONTACT_EMAIL=nairithrin143@gmail.com
+# Email delivery via Resend
+RESEND_API_KEY=re_xxxxxxxx
+
+# Where the contact form email is sent
+CONTACT_EMAIL_TO=nairithrin143@gmail.com
 ```
 
-All variables are public-safe. No API keys are required for the first version.
+- **Telegram**: create a bot via [@BotFather](https://t.me/BotFather) and get your personal chat ID (e.g. contact [@userinfobot](https://t.me/userinfobot)).
+- **Resend**: create an API key at https://resend.com. The free "onboarding" sender works until you verify your own domain.
+- `.env` must never be committed — it is already covered by `.gitignore`.
 
-## 7. Vercel Deployment
+## 7. Contact Form Delivery
+
+Submissions are posted to `POST /api/contact` (`app/api/contact/route.ts`), which delivers the inquiry:
+
+1. **Telegram** — via the Bot API `sendMessage`, formatted as a monospace card.
+2. **Email** — via the Resend REST API, formatted as a styled HTML email.
+
+At least one channel must succeed for the form to show success; if only one channel delivers, the response includes a `warning` and the UI shows an amber note instead of a clean success.
+
+## 8. Vercel Deployment
 
 1. Push this repository to GitHub.
 2. On [Vercel](https://vercel.com), click **New Project** and import the repository.
 3. Vercel auto-detects Next.js — no configuration needed.
-4. Add the environment variables under **Project → Settings → Environment Variables**.
+4. Add the same environment variables under **Project → Settings → Environment Variables** (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `RESEND_API_KEY`, `CONTACT_EMAIL_TO`).
 5. Click **Deploy**.
-
-The project is production-safe: no localhost-specific configuration and no hardcoded API keys.
 
 ## Theme System
 
@@ -79,4 +92,4 @@ All site content is stored in the `data/` folder:
 - `social.ts` — social links
 - `branding.ts` — footer ASCII signature
 
-Update these files to reflect your name, links, and projects. The contact form is frontend-only for now; connect it to an email service (e.g. Resend) or a backend API inside `components/Contact.tsx`.
+The contact form and its serverless route live in `components/Contact.tsx` and `app/api/contact/route.ts`. Update the `data/` files to reflect your name, links, and projects.
