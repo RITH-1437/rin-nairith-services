@@ -111,22 +111,25 @@ const cursorScript = `
     document.body.appendChild(glow);
   }
 
-  function onMove(e) {
-    html.style.setProperty('--mx', e.clientX + 'px');
-    html.style.setProperty('--my', e.clientY + 'px');
+  function isInteractive(el) {
+    return !!el && !!el.closest(
+      'a, button, [role="button"], input, textarea, select, label, [data-cursor]'
+    );
   }
 
-  function onOver(e) {
-    var hit = e.target.closest('a, button, [role="button"], input, textarea, select, label, [data-cursor]');
-    if (hit && dot) {
+  function onMove(e) {
+    var x = e.clientX, y = e.clientY;
+    html.style.setProperty('--mx', x + 'px');
+    html.style.setProperty('--my', y + 'px');
+
+    // Recompute interactivity from the element actually under the cursor.
+    // Guards prevent flicker when children (or the cursor divs) shift under it.
+    var under = document.elementFromPoint(x, y);
+    var hit = isInteractive(under);
+    if (hit) {
       dot.classList.add('is-pointer');
       glow.classList.add('is-pointer');
-    }
-  }
-
-  function onOut(e) {
-    var hit = e.target.closest('a, button, [role="button"], input, textarea, select, label, [data-cursor]');
-    if (hit && dot) {
+    } else {
       dot.classList.remove('is-pointer');
       glow.classList.remove('is-pointer');
     }
@@ -135,8 +138,6 @@ const cursorScript = `
   if (window.matchMedia('(pointer: fine)').matches) {
     document.addEventListener('DOMContentLoaded', init);
     document.addEventListener('mousemove', onMove, { passive: true });
-    document.addEventListener('mouseover', onOver, { passive: true });
-    document.addEventListener('mouseout', onOut, { passive: true });
   }
 })();
 `;
