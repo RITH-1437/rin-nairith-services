@@ -69,6 +69,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteConfig.url,
   },
+  icons: {
+    icon: "/images/me.jpg",
+  },
 };
 
 export const viewport: Viewport = {
