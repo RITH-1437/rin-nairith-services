@@ -198,6 +198,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: cursorScript }} />
+        <meta
+          name="google-site-verification"
+          content="1iTKwNVl9rQdavMT2BrVnM1tq3mf3-RB2G0A5yN48hE"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: structuredData }}
