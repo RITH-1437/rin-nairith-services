@@ -8,7 +8,7 @@ export const siteConfig = {
   title: "RIN NAIRITH | Software Development Services",
   description:
     "Software development services by RIN Nairith, including web applications, backend systems, APIs, business software, and production deployment.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://rin-nairith-services.vercel.app",
+  url: process.env.SITE_URL || "https://rin-nairith-services.vercel.app",
   portfolioUrl: "https://rin-nairith.vercel.app",
   cv: "https://rin-nairith.vercel.app/rin_nairith_cv.pdf",
   email: "nairithrin143@gmail.com",
