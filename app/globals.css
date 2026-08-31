@@ -50,6 +50,7 @@
   body {
     @apply bg-bg text-fg font-sans antialiased;
     overflow-x: hidden;
+    cursor: none;
   }
 
   ::selection {
@@ -114,5 +115,97 @@
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------------- Custom cursor ---------------- */
+.cursor-dot,
+.cursor-glow {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  border-radius: 50%;
+  transform: translate(
+    calc(var(--mx, 50vw) - 50%),
+    calc(var(--my, 50vh) - 50%)
+  );
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: rgb(var(--accent));
+  box-shadow:
+    0 0 6px 1px rgb(var(--accent)),
+    0 0 16px 2px rgb(var(--accent) / 0.45);
+  transition:
+    transform 0.06s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.2s ease,
+    height 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cursor-glow {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  box-shadow:
+    0 0 28px 6px rgb(var(--accent) / 0.18),
+    0 0 64px 12px rgb(var(--accent) / 0.08);
+  transition:
+    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.25s ease,
+    height 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Grow cursor on interactive targets */
+.cursor-dot.is-hover,
+.cursor-glow.is-hover {
+  width: 14px;
+  height: 14px;
+  background: rgb(var(--accent-strong));
+  box-shadow:
+    0 0 10px 2px rgb(var(--accent-strong)),
+    0 0 30px 6px rgb(var(--accent-strong) / 0.55);
+}
+
+.cursor-glow.is-hover {
+  width: 64px;
+  height: 64px;
+  box-shadow:
+    0 0 40px 10px rgb(var(--accent-strong) / 0.22),
+    0 0 80px 18px rgb(var(--accent-strong) / 0.1);
+}
+
+/* Hide native cursor on interactive elements too */
+a,
+button,
+[role="button"],
+input,
+textarea,
+select,
+label {
+  cursor: none;
+}
+
+@media (pointer: coarse) {
+  .cursor-dot,
+  .cursor-glow {
+    display: none;
+  }
+  body,
+  a,
+  button,
+  [role="button"],
+  input,
+  textarea,
+  select,
+  label {
+    cursor: auto;
   }
 }

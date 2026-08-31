@@ -96,6 +96,53 @@ const themeScript = `
 })();
 `;
 
+// Cursor position CSS vars + hover detection — runs once, tiny footprint.
+const cursorScript = `
+(function () {
+  var html = document.documentElement;
+  var dot, glow;
+
+  function init() {
+    dot = document.createElement('div');
+    glow = document.createElement('div');
+    dot.className = 'cursor-dot';
+    glow.className = 'cursor-glow';
+    document.body.appendChild(dot);
+    document.body.appendChild(glow);
+  }
+
+  function onMove(e) {
+    html.style.setProperty('--mx', e.clientX + 'px');
+    html.style.setProperty('--my', e.clientY + 'px');
+  }
+
+  function onOver(e) {
+    var t = e.target;
+    var hit = t.closest('a, button, [role="button"], input, textarea, select, label');
+    if (hit && dot) {
+      dot.classList.add('is-hover');
+      glow.classList.add('is-hover');
+    }
+  }
+
+  function onOut(e) {
+    var t = e.target;
+    var hit = t.closest('a, button, [role="button"], input, textarea, select, label');
+    if (hit && dot) {
+      dot.classList.remove('is-hover');
+      glow.classList.remove('is-hover');
+    }
+  }
+
+  if (window.matchMedia('(pointer: fine)').matches) {
+    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('mousemove', onMove, { passive: true });
+    document.addEventListener('mouseover', onOver, { passive: true });
+    document.addEventListener('mouseout', onOut, { passive: true });
+  }
+})();
+`;
+
 export default function RootLayout({
   children,
 }: {
@@ -110,6 +157,7 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: cursorScript }} />
       </head>
       <body className="font-sans">
         <ThemeProvider>
