@@ -163,25 +163,6 @@
     box-shadow 0.25s ease;
 }
 
-/* Grow cursor on interactive targets */
-.cursor-dot.is-hover,
-.cursor-glow.is-hover {
-  width: 14px;
-  height: 14px;
-  background: rgb(var(--accent-strong));
-  box-shadow:
-    0 0 10px 2px rgb(var(--accent-strong)),
-    0 0 30px 6px rgb(var(--accent-strong) / 0.55);
-}
-
-.cursor-glow.is-hover {
-  width: 64px;
-  height: 64px;
-  box-shadow:
-    0 0 40px 10px rgb(var(--accent-strong) / 0.22),
-    0 0 80px 18px rgb(var(--accent-strong) / 0.1);
-}
-
 /* Hide native cursor on interactive elements too */
 a,
 button,

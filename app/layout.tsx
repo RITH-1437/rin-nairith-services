@@ -96,7 +96,7 @@ const themeScript = `
 })();
 `;
 
-// Cursor position CSS vars + hover detection — runs once, tiny footprint.
+// Cursor position CSS vars — runs once, tiny footprint.
 const cursorScript = `
 (function () {
   var html = document.documentElement;
@@ -116,29 +116,9 @@ const cursorScript = `
     html.style.setProperty('--my', e.clientY + 'px');
   }
 
-  function onOver(e) {
-    var t = e.target;
-    var hit = t.closest('a, button, [role="button"], input, textarea, select, label');
-    if (hit && dot) {
-      dot.classList.add('is-hover');
-      glow.classList.add('is-hover');
-    }
-  }
-
-  function onOut(e) {
-    var t = e.target;
-    var hit = t.closest('a, button, [role="button"], input, textarea, select, label');
-    if (hit && dot) {
-      dot.classList.remove('is-hover');
-      glow.classList.remove('is-hover');
-    }
-  }
-
   if (window.matchMedia('(pointer: fine)').matches) {
     document.addEventListener('DOMContentLoaded', init);
     document.addEventListener('mousemove', onMove, { passive: true });
-    document.addEventListener('mouseover', onOver, { passive: true });
-    document.addEventListener('mouseout', onOut, { passive: true });
   }
 })();
 `;
