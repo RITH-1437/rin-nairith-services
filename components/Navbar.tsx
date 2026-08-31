@@ -192,7 +192,7 @@ export default function Navbar() {
                 className="mt-2"
               >
                 <a
-                  href={siteConfig.url}
+                  href={siteConfig.portfolioUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between rounded-md border border-lime/40 bg-lime/10 px-3 py-3 font-medium text-lime"

@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="border-t border-line bg-bgSoft">
       <div className="container-page flex justify-center py-12">
         <a
-          href={siteConfig.url}
+          href={siteConfig.portfolioUrl}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="RIN NAIRITH — portfolio"

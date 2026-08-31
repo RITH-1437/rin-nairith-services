@@ -1,24 +1,17 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/data/site";
 
-const sections = [
-  "",
-  "#services",
-  "#projects",
-  "#process",
-  "#pricing",
-  "#about",
-  "#faq",
-  "#contact",
-];
-
+// The site is a single-page services website. Only the canonical homepage is
+// a crawlable, indexable URL — the in-page sections (#services, #projects,
+// etc.) are client-side anchors on the same document, not separate pages.
+// Including them as separate sitemap entries would create duplicate URLs.
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
-
-  return sections.map((path) => ({
-    url: `${siteConfig.url}${path}`,
-    lastModified: now,
-    changeFrequency: "monthly" as const,
-    priority: path === "" ? 1 : 0.8,
-  }));
+  return [
+    {
+      url: siteConfig.url,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 1,
+    },
+  ];
 }

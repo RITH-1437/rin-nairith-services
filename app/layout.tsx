@@ -27,19 +27,20 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [
-    "software developer",
+    "software development services",
+    "software developer Cambodia",
+    "software developer Phnom Penh",
+    "web developer Cambodia",
+    "backend developer Cambodia",
+    "web application development",
+    "backend & API development",
     "RIN Nairith",
-    "web developer",
-    "freelance developer",
-    "web applications",
-    "REST API",
-    "cloud deployment",
-    "AWS",
-    "Laravel",
-    "Spring Boot",
+    "RIN NAIRITH",
   ],
   authors: [{ name: siteConfig.developerName }],
   creator: siteConfig.developerName,
+  publisher: siteConfig.name,
+  formatDetection: { email: false, address: false, telephone: false },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -52,7 +53,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} — Software Developer`,
+        alt: `${siteConfig.name} — Software Development Services`,
       },
     ],
   },
@@ -65,6 +66,7 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large" },
   },
   alternates: {
     canonical: siteConfig.url,
@@ -142,6 +144,45 @@ const cursorScript = `
 })();
 `;
 
+// Structured data: Person + WebSite, built only from real project data.
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "RIN NAIRITH",
+  alternateName: "RIN Nairith",
+  jobTitle: "Software Developer",
+  url: siteConfig.portfolioUrl,
+  image: `${siteConfig.url}/images/me.jpg`,
+  sameAs: [
+    siteConfig.social.github,
+    siteConfig.social.linkedin,
+    siteConfig.social.facebook,
+    siteConfig.social.telegram,
+  ],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteConfig.name,
+  alternateName: siteConfig.developerName,
+  url: siteConfig.url,
+  description: siteConfig.description,
+  inLanguage: "en",
+  publisher: {
+    "@type": "Person",
+    name: "RIN NAIRITH",
+    url: siteConfig.portfolioUrl,
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [personJsonLd, websiteJsonLd],
+};
+
+const structuredData = JSON.stringify(jsonLd);
+
 export default function RootLayout({
   children,
 }: {
@@ -157,6 +198,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: cursorScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: structuredData }}
+        />
       </head>
       <body className="font-sans">
         <ThemeProvider>

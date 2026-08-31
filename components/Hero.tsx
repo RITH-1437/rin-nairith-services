@@ -80,7 +80,7 @@ export default function Hero() {
               View My Work
             </a>
             <a
-              href={siteConfig.url}
+              href={siteConfig.portfolioUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary px-7 py-3.5"
