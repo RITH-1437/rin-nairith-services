@@ -96,7 +96,7 @@ const themeScript = `
 })();
 `;
 
-// Cursor position CSS vars — runs once, tiny footprint.
+// Cursor position CSS vars + pointer-on-hover — runs once, tiny footprint.
 const cursorScript = `
 (function () {
   var html = document.documentElement;
@@ -116,9 +116,27 @@ const cursorScript = `
     html.style.setProperty('--my', e.clientY + 'px');
   }
 
+  function onOver(e) {
+    var hit = e.target.closest('a, button, [role="button"], input, textarea, select, label, [data-cursor]');
+    if (hit && dot) {
+      dot.classList.add('is-pointer');
+      glow.classList.add('is-pointer');
+    }
+  }
+
+  function onOut(e) {
+    var hit = e.target.closest('a, button, [role="button"], input, textarea, select, label, [data-cursor]');
+    if (hit && dot) {
+      dot.classList.remove('is-pointer');
+      glow.classList.remove('is-pointer');
+    }
+  }
+
   if (window.matchMedia('(pointer: fine)').matches) {
     document.addEventListener('DOMContentLoaded', init);
     document.addEventListener('mousemove', onMove, { passive: true });
+    document.addEventListener('mouseover', onOver, { passive: true });
+    document.addEventListener('mouseout', onOut, { passive: true });
   }
 })();
 `;
