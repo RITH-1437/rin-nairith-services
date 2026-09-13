@@ -14,6 +14,7 @@ const navLinks = [
   { label: "Process", href: "#process" },
   { label: "Pricing", href: "#pricing" },
   { label: "About", href: "#about" },
+  { label: "Team", href: "#team" },
   { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];
@@ -79,7 +80,7 @@ export default function Navbar() {
             scrollTo("#home");
           }}
           className="shrink-0"
-          aria-label="RIN NAIRITH — home"
+          aria-label="Two Brothers — home"
         >
           <Logo />
         </a>

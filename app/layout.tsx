@@ -72,7 +72,8 @@ export const metadata: Metadata = {
     canonical: siteConfig.url,
   },
   icons: {
-    icon: "/images/me.jpg",
+    icon: "/images/people/favicon.png",
+    apple: "/images/people/favicon.png",
   },
 };
 

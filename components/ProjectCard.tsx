@@ -36,13 +36,24 @@ export default function ProjectCard({ project }: { project: Project }) {
           className="block text-left"
         >
           <div className="relative h-40 overflow-hidden border-b border-line">
-            <Image
-              src={project.image}
-              alt={`${project.name} screenshot`}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-[1.04]"
-            />
+            {project.image ? (
+              <Image
+                src={project.image}
+                alt={`${project.name} screenshot`}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+              />
+            ) : (
+              <div className="relative flex h-full w-full items-center justify-center bg-panelRaised">
+                <span aria-hidden="true" className="font-mono text-4xl font-bold text-lime">
+                  {projectGlyph(project.id)}
+                </span>
+                <span className="absolute bottom-2 left-2 font-mono text-[11px] uppercase tracking-wider text-fgFaint">
+                  GitHub Project
+                </span>
+              </div>
+            )}
             <span className="absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center rounded bg-black/60 font-mono text-xs font-bold text-lime backdrop-blur-sm">
               {projectGlyph(project.id)}
             </span>
@@ -134,13 +145,21 @@ export default function ProjectCard({ project }: { project: Project }) {
               </div>
 
               <div className="relative mt-5 aspect-[16/9] w-full overflow-hidden rounded-lg border border-line">
-                <Image
-                  src={project.image}
-                  alt={`${project.name} screenshot`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 42rem"
-                  className="object-cover"
-                />
+                {project.image ? (
+                  <Image
+                    src={project.image}
+                    alt={`${project.name} screenshot`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 42rem"
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-panelRaised">
+                    <span aria-hidden="true" className="font-mono text-5xl font-bold text-lime">
+                      {projectGlyph(project.id)}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="mt-5 space-y-5 text-sm leading-relaxed text-fgMuted">
@@ -148,10 +167,12 @@ export default function ProjectCard({ project }: { project: Project }) {
                   <h4 className="font-mono text-xs uppercase tracking-widest text-lime">Project</h4>
                   <p className="mt-1">{project.description}</p>
                 </div>
-                <div>
-                  <h4 className="font-mono text-xs uppercase tracking-widest text-lime">The Problem</h4>
-                  <p className="mt-1">{project.problem}</p>
-                </div>
+                {project.problem ? (
+                  <div>
+                    <h4 className="font-mono text-xs uppercase tracking-widest text-lime">The Problem</h4>
+                    <p className="mt-1">{project.problem}</p>
+                  </div>
+                ) : null}
                 <div>
                   <h4 className="font-mono text-xs uppercase tracking-widest text-lime">Main Features</h4>
                   <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">

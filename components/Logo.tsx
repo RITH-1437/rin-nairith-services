@@ -14,7 +14,7 @@ export default function Logo({ className }: LogoProps) {
         {siteConfig.logo}
       </span>
       <span className="font-semibold tracking-[0.12em] text-fg">
-        {siteConfig.name}
+        Two Brothers
       </span>
     </span>
   );

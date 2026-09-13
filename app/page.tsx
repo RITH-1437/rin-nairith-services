@@ -5,6 +5,7 @@ import Projects from "@/components/Projects";
 import Process from "@/components/Process";
 import Pricing from "@/components/Pricing";
 import About from "@/components/About";
+import Collaborators from "@/components/Collaborators";
 import Faq from "@/components/Faq";
 import Contact from "@/components/Contact";
 import Cta from "@/components/Cta";
@@ -19,6 +20,7 @@ export default function Home() {
       <Process />
       <Pricing />
       <About />
+      <Collaborators />
       <Faq />
       <Contact />
       <Cta />

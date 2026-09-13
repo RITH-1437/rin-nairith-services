@@ -6,11 +6,11 @@ export interface Project {
   id: string;
   name: string;
   description: string;
-  problem: string;
+  problem?: string;
   features: string[];
   technologies: string[];
   category: ProjectCategory;
-  image: string;
+  image?: string;
   githubUrl?: string;
   liveUrl?: string;
   status: ProjectStatus;
@@ -201,5 +201,95 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/RITH-1437/File_Extension.git",
     status: "Open Source",
     role: "Developer",
+  },
+  {
+    id: "image-caption-generator",
+    name: "Image Caption Generator",
+    description:
+      "AI-powered image caption generator built with CNN + LSTM and DenseNet201 transfer learning — automatic caption generation with a Streamlit web app.",
+    features: [
+      "Automatic caption generation",
+      "CNN + LSTM architecture",
+      "DenseNet201 transfer learning",
+      "Streamlit web app",
+    ],
+    technologies: ["Python", "TensorFlow", "Streamlit", "NLP"],
+    category: "Open Source",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71",
+    githubUrl: "https://github.com/YongLyhor/Image-Caption-Generator",
+    status: "Open Source",
+    role: "YONG Lyhor · Data Scientist",
+  },
+  {
+    id: "cambodia-job-dashboard",
+    name: "Cambodia Job Market Dashboard",
+    description:
+      "Data analytics dashboard built with Power BI analyzing 900+ Cambodian job posts — visualizing salary trends, in-demand skills, and top-paying industries.",
+    features: [
+      "Analysis of 900+ job posts",
+      "Salary trend visualization",
+      "In-demand skills insights",
+      "Top-paying industries",
+    ],
+    technologies: ["Power BI", "Excel", "SQL", "Python"],
+    category: "Backend",
+    image: "https://images.unsplash.com/photo-1557804506-669a67965ba0",
+    status: "Unavailable",
+    role: "YONG Lyhor · Data Analyst",
+  },
+  {
+    id: "sign-language-detection",
+    name: "Real-Time Sign Language Detection",
+    description:
+      "Real-time sign language detection system built with YOLOv11, trained on a custom dataset of 900+ images to recognize 10 gestures with 83% accuracy.",
+    features: [
+      "Real-time sign language detection",
+      "YOLOv11 model",
+      "Custom dataset (900+ images)",
+      "10 gestures · 83% accuracy",
+    ],
+    technologies: ["Python", "YOLOv11", "Machine Learning", "Roboflow"],
+    category: "Open Source",
+    image: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0",
+    githubUrl: "https://github.com/KheangDS/Sign-Language-Detection",
+    status: "Open Source",
+    role: "YONG Lyhor · Machine Learning",
+  },
+  {
+    id: "ragkhmer-tutor-chatbot",
+    name: "RagKhmer-Tutor Chatbot",
+    description:
+      "AI chatbot built with GPT-4o and RAG supporting Khmer and English question answering — multilingual retrieval with a Streamlit chat interface.",
+    features: [
+      "Khmer & English question answering",
+      "RAG retrieval",
+      "GPT-4o powered",
+      "Streamlit chat interface",
+    ],
+    technologies: ["Streamlit", "Python", "RAG", "OpenAI API"],
+    category: "Open Source",
+    image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44",
+    githubUrl: "https://github.com/YongLyhor/RagKhmer-Tutor-Chatbot",
+    status: "Open Source",
+    role: "YONG Lyhor · Data Scientist",
+  },
+  {
+    id: "ticket-management-system",
+    name: "Ticket Management System",
+    description:
+      "Microservices-based ticket management system built with React.js and Spring Boot — ticket tracking, user management, real-time collaboration, and scalable backend services.",
+    features: [
+      "Ticket tracking",
+      "User management",
+      "Real-time collaboration",
+      "Microservices architecture",
+      "Scalable backend services",
+    ],
+    technologies: ["Java", "Spring", "React.js", "PostgreSQL", "AWS"],
+    category: "Full Stack",
+    image: "https://www.redvector.com/wp-content/uploads/2018/01/learning-management-system.png",
+    githubUrl: "https://github.com/YongLyhor/Ticket-Management-System-TMS-",
+    status: "Open Source",
+    role: "YONG Lyhor · Full Stack Developer",
   },
 ];

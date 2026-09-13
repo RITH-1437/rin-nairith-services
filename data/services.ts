@@ -5,6 +5,10 @@ import {
   LayoutDashboard,
   Cloud,
   Wrench,
+  Bot,
+  BrainCircuit,
+  ScanEye,
+  DatabaseZap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -71,5 +75,41 @@ export const services: Service[] = [
       "Bug fixing, optimization, feature development, deployment, and technical improvements.",
     features: ["Bug fixes", "Optimization", "New features"],
     icon: Wrench,
+  },
+  {
+    id: "rag-applications",
+    slug: "rag-applications",
+    name: "RAG & AI Applications",
+    description:
+      "Build Retrieval-Augmented Generation systems that answer questions from your own documents and data.",
+    features: ["Retrieval-Augmented Generation", "Chat over your data", "Multilingual Q&A"],
+    icon: Bot,
+  },
+  {
+    id: "llm-fine-tuning",
+    slug: "llm-fine-tuning",
+    name: "LLM Fine Tuning",
+    description:
+      "Fine-tune and adapt large language models to your domain, then deploy them in production.",
+    features: ["Fine-tuning", "Domain adaptation", "Model deployment"],
+    icon: BrainCircuit,
+  },
+  {
+    id: "computer-vision",
+    slug: "computer-vision",
+    name: "Computer Vision",
+    description:
+      "Object detection, classification, and real-time recognition systems using modern vision models.",
+    features: ["Object detection (YOLO)", "Image classification", "Real-time recognition"],
+    icon: ScanEye,
+  },
+  {
+    id: "big-data",
+    slug: "big-data",
+    name: "Big Data & Analytics",
+    description:
+      "Ingest, analyze, and visualize large datasets — turning raw data into dashboards and insights.",
+    features: ["Data pipelines", "Analysis & visualization", "Dashboards (Power BI)"],
+    icon: DatabaseZap,
   },
 ];
