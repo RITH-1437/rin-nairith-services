@@ -1,4 +1,4 @@
-const siteUrl = process.env.SITE_URL || "https://2brothers-services.vercel.app";
+const siteUrl = "https://2brothers-services.vercel.app";
 
 export const siteConfig = {
   name: "2Brothers Services",

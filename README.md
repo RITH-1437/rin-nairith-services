@@ -32,7 +32,6 @@ npm start
 
 Copy `.env.example` to `.env.local` and provide the values needed for contact delivery:
 
-- `SITE_URL=https://2brothers-services.vercel.app`
 - `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` for Telegram delivery
 - `TELEGRAM_WEBHOOK_SECRET` for the customer-message webhook
 - `TELEGRAM_ALLOWED_CHAT_IDS` for optional customer chat filtering
@@ -51,15 +50,8 @@ Never commit `.env.local` or other secrets.
 
 - `telegram-push-notification.yml` sends a Telegram notification for repository pushes when its repository secrets are configured.
 - `ci.yml` runs install, lint, typecheck, and a production build for pushes and pull requests targeting `main`.
-- `deploy.yml` builds and deploys `main` to Vercel after pull, or manually from the Actions tab.
 
-Configure these GitHub repository secrets for Vercel deployment:
-
-- `VERCEL_TOKEN`
-- `VERCEL_ORG_ID`
-- `VERCEL_PROJECT_ID`
-
-The Telegram notification workflow uses `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` repository secrets. The contact delivery variables belong in the Vercel project environment as well as the deployment environment when those features are used.
+Production deployment is handled by the connected Vercel Git integration when `main` changes, so a separate Vercel token workflow is not required. The Telegram notification workflow uses `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` repository secrets. The contact delivery variables belong in the Vercel project environment when those features are used.
 
 ## Content model
 
