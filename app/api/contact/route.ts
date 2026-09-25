@@ -1,4 +1,9 @@
 import { NextResponse } from "next/server";
+import {
+  escapeTelegramHtml,
+  sendTelegramMessage,
+  truncateTelegramText,
+} from "@/lib/telegram";
 
 /**
  * POST /api/contact
@@ -17,13 +22,6 @@ interface ContactPayload {
   description?: string;
 }
 
-const esc = (value: string) =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-
 function buildTelegramHtml(p: ContactPayload): string {
   const rows: Array<[string, string]> = [
     ["Name", p.name ?? "-"],
@@ -35,16 +33,19 @@ function buildTelegramHtml(p: ContactPayload): string {
   // Left-align labels to the widest one so the monospace block lines up.
   const width = Math.max(...rows.map(([l]) => l.length));
   const fieldLines = rows
-    .map(([label, value]) => `${label.padEnd(width)} : ${value}`)
+    .map(
+      ([label, value]) =>
+        `${label.padEnd(width)} : ${truncateTelegramText(value, 200)}`
+    )
     .join("\n");
 
   return [
     "<b>New Project Inquiry</b>",
     "",
-    `<code>${esc(fieldLines)}</code>`,
+    `<code>${escapeTelegramHtml(fieldLines)}</code>`,
     "",
     "<b>Description</b>",
-    `<code>${esc(p.description ?? "-")}</code>`,
+    `<code>${escapeTelegramHtml(truncateTelegramText(p.description ?? "-", 3000))}</code>`,
   ].join("\n");
 }
 
@@ -69,15 +70,15 @@ function buildEmailHtml(p: ContactPayload): string {
             .map(
               ([label, value]) => `
           <tr>
-            <td style="padding:8px 8px 8px 0;width:42%;vertical-align:top;color:#6a7360;font-weight:600;">${esc(label)}</td>
-            <td style="padding:8px 0;vertical-align:top;color:#1c1f18;">${esc(value)}</td>
+            <td style="padding:8px 8px 8px 0;width:42%;vertical-align:top;color:#6a7360;font-weight:600;">${escapeTelegramHtml(label)}</td>
+            <td style="padding:8px 0;vertical-align:top;color:#1c1f18;">${escapeTelegramHtml(value)}</td>
           </tr>`
             )
             .join("")}
         </table>
         <div style="margin-top:16px;padding:14px 16px;background:#f4f5f0;border-left:3px solid #b7ff3c;border-radius:6px;">
           <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#6a7360;margin-bottom:6px;">Description</div>
-          <div style="font-size:14px;color:#1c1f18;white-space:pre-wrap;">${esc(p.description ?? "-")}</div>
+          <div style="font-size:14px;color:#1c1f18;white-space:pre-wrap;">${escapeTelegramHtml(p.description ?? "-")}</div>
         </div>
       </div>
       <div style="padding:12px 24px;background:#fafbf8;border-top:1px solid #e2e6da;font-size:12px;color:#9aa28d;">
@@ -89,28 +90,7 @@ function buildEmailHtml(p: ContactPayload): string {
 }
 
 async function deliverTelegram(p: ContactPayload): Promise<void> {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) throw new Error("TELEGRAM env vars not set");
-
-  const res = await fetch(
-    `https://api.telegram.org/bot${token}/sendMessage`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: buildTelegramHtml(p),
-        parse_mode: "HTML",
-        disable_web_page_preview: true,
-      }),
-    }
-  );
-
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new Error(`Telegram ${res.status}: ${body}`);
-  }
+  await sendTelegramMessage(buildTelegramHtml(p));
 }
 
 async function deliverEmail(p: ContactPayload): Promise<void> {

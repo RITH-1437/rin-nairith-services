@@ -41,9 +41,15 @@ npm start
 Create a `.env` file from the example:
 
 ```
+# Public site URL
+SITE_URL=https://rin-nairith-services.vercel.app
+
 # Telegram delivery (bot token + your personal chat ID)
 TELEGRAM_BOT_TOKEN=123456:ABC-DEF...
 TELEGRAM_CHAT_ID=7523303813
+TELEGRAM_WEBHOOK_SECRET=use-a-long-random-secret
+# Optional comma-separated customer chat IDs; leave empty to accept all chats.
+TELEGRAM_ALLOWED_CHAT_IDS=
 
 # Email delivery via Resend
 RESEND_API_KEY=re_xxxxxxxx
@@ -53,10 +59,11 @@ CONTACT_EMAIL_TO=nairithrin143@gmail.com
 ```
 
 - **Telegram**: create a bot via [@BotFather](https://t.me/BotFather) and get your personal chat ID (e.g. contact [@userinfobot](https://t.me/userinfobot)).
+- **Webhook**: set a long random `TELEGRAM_WEBHOOK_SECRET`; Telegram sends it in the `X-Telegram-Bot-Api-Secret-Token` header.
 - **Resend**: create an API key at https://resend.com. The free "onboarding" sender works until you verify your own domain.
 - `.env` must never be committed — it is already covered by `.gitignore`.
 
-## 7. Contact Form Delivery
+## 7. Contact Form and Telegram Bot Delivery
 
 Submissions are posted to `POST /api/contact` (`app/api/contact/route.ts`), which delivers the inquiry:
 
@@ -65,13 +72,40 @@ Submissions are posted to `POST /api/contact` (`app/api/contact/route.ts`), whic
 
 At least one channel must succeed for the form to show success; if only one channel delivers, the response includes a `warning` and the UI shows an amber note instead of a clean success.
 
+### Customer messages from the Telegram bot
+
+The server endpoint `POST /api/telegram/webhook` accepts Telegram updates and forwards text or photo-caption messages to `TELEGRAM_CHAT_ID`. It validates `TELEGRAM_WEBHOOK_SECRET`, escapes customer text, and optionally limits incoming chats with `TELEGRAM_ALLOWED_CHAT_IDS`.
+
+After deploying, register the webhook once:
+
+```bash
+curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook" \
+  --data-urlencode "url=${SITE_URL}/api/telegram/webhook" \
+  --data-urlencode "secret_token=${TELEGRAM_WEBHOOK_SECRET}"
+```
+
+To verify the registered URL and secret, run:
+
+```bash
+curl --silent "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getWebhookInfo"
+```
+
+Run the commands with `SITE_URL`, `TELEGRAM_BOT_TOKEN`, and `TELEGRAM_WEBHOOK_SECRET` exported in the shell.
+
+Do not use `getUpdates` polling while this webhook is active. Telegram retries a failed webhook delivery, so the endpoint returns a server error when forwarding fails.
+
+### Git push notifications
+
+`.github/workflows/telegram-push-notification.yml` sends a Telegram message for every repository push. Add these repository secrets in GitHub: `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`. The workflow skips notification when either secret is missing.
+
 ## 8. Vercel Deployment
 
 1. Push this repository to GitHub.
 2. On [Vercel](https://vercel.com), click **New Project** and import the repository.
 3. Vercel auto-detects Next.js — no configuration needed.
-4. Add the same environment variables under **Project → Settings → Environment Variables** (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `RESEND_API_KEY`, `CONTACT_EMAIL_TO`).
-5. Click **Deploy**.
+4. Add the same environment variables under **Project → Settings → Environment Variables** (`SITE_URL`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`, `TELEGRAM_ALLOWED_CHAT_IDS`, `RESEND_API_KEY`, `CONTACT_EMAIL_TO`).
+5. Deploy, then register the Telegram webhook with the command in section 7.
+6. Add `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` as GitHub repository secrets for push notifications.
 
 ## Theme System
 
