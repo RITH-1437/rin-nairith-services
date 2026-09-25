@@ -1,6 +1,16 @@
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
-import { technologyGroups } from "@/data/technologies";
+import { marqueeTech, technologyGroups } from "@/data/technologies";
+import type { TechIcon } from "@/data/technologies";
+
+function TechChip({ label, icon: Icon }: { label: string; icon: TechIcon }) {
+  return (
+    <li className="flex shrink-0 items-center gap-2.5 rounded-full border border-line bg-panel px-4 py-2.5">
+      <Icon aria-hidden="true" className="h-5 w-5 text-lime" />
+      <span className="whitespace-nowrap text-sm text-fgMuted">{label}</span>
+    </li>
+  );
+}
 
 export default function Technologies() {
   return (
@@ -11,7 +21,38 @@ export default function Technologies() {
           title="Tools for the work"
           description="We work across the layers that make a digital product useful: interfaces, applications, data, infrastructure, and delivery."
         />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        <Reveal className="relative mt-10">
+          <div
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-bgSoft to-transparent sm:w-28"
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-bgSoft to-transparent sm:w-28"
+            aria-hidden="true"
+          />
+
+          <div className="overflow-hidden motion-reduce:overflow-x-auto">
+            {/* Track holds two identical copies and slides exactly one copy width (-50%). */}
+            <div className="flex w-max animate-marquee hover:[animation-play-state:paused] motion-reduce:w-full motion-reduce:flex-wrap motion-reduce:animate-none">
+              <ul className="flex shrink-0 items-center gap-3 pr-3">
+                {marqueeTech.map((tech) => (
+                  <TechChip key={tech.label} {...tech} />
+                ))}
+              </ul>
+              <ul
+                aria-hidden="true"
+                className="flex shrink-0 items-center gap-3 pr-3 motion-reduce:hidden"
+              >
+                {marqueeTech.map((tech) => (
+                  <TechChip key={tech.label} {...tech} />
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Reveal>
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {technologyGroups.map((group, g) => (
             <Reveal key={group.id} delay={g * 0.06}>
               <div className="h-full rounded-lg border border-line bg-panel p-5">

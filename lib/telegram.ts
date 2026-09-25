@@ -10,7 +10,7 @@ export function escapeTelegramHtml(value: string): string {
 
 export function truncateTelegramText(value: string, maxLength = 3500): string {
   if (value.length <= maxLength) return value;
-  return `${value.slice(0, Math.max(0, maxLength - 1))}…`;
+  return `${value.slice(0, Math.max(0, maxLength - 1))}.`;
 }
 
 type SendTelegramMessageOptions = {
@@ -24,7 +24,12 @@ export async function sendTelegramMessage(
 ): Promise<void> {
   const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
   const chatId = (options.chatId ?? process.env.TELEGRAM_CHAT_ID)?.trim();
-  if (!token || !chatId) throw new Error("TELEGRAM env vars not set");
+  if (!token || !chatId) throw new Error("Telegram env vars not set");
+  if (!/^-?\d+$/.test(chatId)) {
+    throw new Error(
+      `TELEGRAM_CHAT_ID is not a valid Telegram chat id (got "${chatId}")`
+    );
+  }
 
   const response = await fetch(
     `${TELEGRAM_API_BASE}/bot${token}/sendMessage`,

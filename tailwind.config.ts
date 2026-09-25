@@ -49,6 +49,7 @@ const config: Config = {
       animation: {
         "slow-pulse": "slowPulse 5s ease-in-out infinite",
         "fade-up": "fadeUp 0.7s ease-out both",
+        marquee: "marquee 38s linear infinite",
       },
       keyframes: {
         slowPulse: {
@@ -58,6 +59,10 @@ const config: Config = {
         fadeUp: {
           "0%": { opacity: "0", transform: "translateY(16px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
         },
       },
     },

@@ -167,6 +167,12 @@ export async function POST(request: Request) {
   }
 
   if (results.length > 0) {
+    if (errors.length > 0) {
+      console.warn(
+        `[contact] partial delivery (delivered: ${results.join(", ")})`,
+        errors.join(" | ")
+      );
+    }
     return NextResponse.json({
       ok: true,
       delivered: results,
