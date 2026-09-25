@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -139,9 +140,17 @@ const cursorScript = `
     }
   }
 
-  if (window.matchMedia('(pointer: fine)').matches) {
-    document.addEventListener('DOMContentLoaded', init);
+  function start() {
+    init();
     document.addEventListener('mousemove', onMove, { passive: true });
+  }
+
+  if (window.matchMedia('(pointer: fine)').matches) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start, { once: true });
+    } else {
+      start();
+    }
   }
 })();
 `;
@@ -189,10 +198,16 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <script dangerouslySetInnerHTML={{ __html: cursorScript }} />
-        <script
+        <Script id="theme-script" strategy="beforeInteractive">
+          {themeScript}
+        </Script>
+        <Script id="cursor-script" strategy="afterInteractive">
+          {cursorScript}
+        </Script>
+        <Script
+          id="structured-data"
           type="application/ld+json"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: structuredData }}
         />
       </head>
