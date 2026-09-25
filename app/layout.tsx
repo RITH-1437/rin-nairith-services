@@ -27,19 +27,21 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [
-    "software development services",
-    "software developer Cambodia",
-    "software developer Phnom Penh",
-    "web developer Cambodia",
-    "backend developer Cambodia",
-    "web application development",
-    "backend & API development",
-    "RIN Nairith",
-    "RIN NAIRITH",
+    "2Brothers Services",
+    "digital solutions Cambodia",
+    "business website development",
+    "custom web application development",
+    "business management systems",
+    "backend and API development",
+    "AI application development",
+    "cloud deployment",
   ],
-  authors: [{ name: siteConfig.developerName }],
-  creator: siteConfig.developerName,
+  authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
   publisher: siteConfig.name,
+  verification: {
+    google: "1iTKwNVl9rQdavMT2BrVnM1tq3mf3-RB2G0A5yN48hE",
+  },
   formatDetection: { email: false, address: false, telephone: false },
   openGraph: {
     type: "website",
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} — Software Development Services`,
+        alt: `${siteConfig.name} — Digital Solutions for Modern Businesses`,
       },
     ],
   },
@@ -66,7 +68,12 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large" },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+    },
   },
   alternates: {
     canonical: siteConfig.url,
@@ -86,11 +93,10 @@ export const viewport: Viewport = {
   ],
 };
 
-// Inline script sets the theme before first paint to avoid a flash.
 const themeScript = `
 (function () {
   try {
-    var stored = localStorage.getItem('rin-theme');
+    var stored = localStorage.getItem('2brothers-theme');
     var theme = stored === 'dark' || stored === 'light'
       ? stored
       : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
@@ -99,7 +105,6 @@ const themeScript = `
 })();
 `;
 
-// Cursor position CSS vars + pointer-on-hover — runs once, tiny footprint.
 const cursorScript = `
 (function () {
   var html = document.documentElement;
@@ -124,12 +129,8 @@ const cursorScript = `
     var x = e.clientX, y = e.clientY;
     html.style.setProperty('--mx', x + 'px');
     html.style.setProperty('--my', y + 'px');
-
-    // Recompute interactivity from the element actually under the cursor.
-    // Guards prevent flicker when children (or the cursor divs) shift under it.
     var under = document.elementFromPoint(x, y);
-    var hit = isInteractive(under);
-    if (hit) {
+    if (isInteractive(under)) {
       dot.classList.add('is-pointer');
       glow.classList.add('is-pointer');
     } else {
@@ -145,44 +146,35 @@ const cursorScript = `
 })();
 `;
 
-// Structured data: Person + WebSite, built only from real project data.
-const personJsonLd = {
+const organizationId = `${siteConfig.url}/#organization`;
+const organizationJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Person",
-  name: "RIN NAIRITH",
-  alternateName: "RIN Nairith",
-  jobTitle: "Software Developer",
-  url: siteConfig.portfolioUrl,
-  image: `${siteConfig.url}/images/me.jpg`,
-  sameAs: [
-    siteConfig.social.github,
-    siteConfig.social.linkedin,
-    siteConfig.social.facebook,
-    siteConfig.social.telegram,
-  ],
+  "@type": "Organization",
+  "@id": organizationId,
+  name: siteConfig.name,
+  url: siteConfig.url,
+  description: siteConfig.description,
+  email: siteConfig.email,
+  telephone: siteConfig.phone,
+  logo: `${siteConfig.url}/images/people/favicon.png`,
+  image: `${siteConfig.url}/opengraph-image`,
 };
 
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": `${siteConfig.url}/#website`,
   name: siteConfig.name,
-  alternateName: siteConfig.developerName,
   url: siteConfig.url,
   description: siteConfig.description,
   inLanguage: "en",
-  publisher: {
-    "@type": "Person",
-    name: "RIN NAIRITH",
-    url: siteConfig.portfolioUrl,
-  },
+  publisher: { "@id": organizationId },
 };
 
-const jsonLd = {
+const structuredData = JSON.stringify({
   "@context": "https://schema.org",
-  "@graph": [personJsonLd, websiteJsonLd],
-};
-
-const structuredData = JSON.stringify(jsonLd);
+  "@graph": [organizationJsonLd, websiteJsonLd],
+});
 
 export default function RootLayout({
   children,
@@ -199,10 +191,6 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: cursorScript }} />
-        <meta
-          name="google-site-verification"
-          content="1iTKwNVl9rQdavMT2BrVnM1tq3mf3-RB2G0A5yN48hE"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: structuredData }}

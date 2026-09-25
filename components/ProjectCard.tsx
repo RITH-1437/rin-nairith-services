@@ -205,7 +205,7 @@ export default function ProjectCard({ project }: { project: Project }) {
                     Category: <span className="text-fgMuted">{project.category}</span>
                   </span>
                   <span>
-                    My role: <span className="text-fgMuted">{project.role}</span>
+                    Role: <span className="text-fgMuted">{project.role}</span>
                   </span>
                 </div>
               </div>

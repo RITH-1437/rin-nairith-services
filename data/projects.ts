@@ -224,9 +224,9 @@ export const projects: Project[] = [
     id: "cambodia-job-dashboard",
     name: "Cambodia Job Market Dashboard",
     description:
-      "Data analytics dashboard built with Power BI analyzing 900+ Cambodian job posts — visualizing salary trends, in-demand skills, and top-paying industries.",
+      "Data analytics dashboard built with Power BI to analyze Cambodian job posts and visualize salary trends, in-demand skills, and top-paying industries.",
     features: [
-      "Analysis of 900+ job posts",
+      "Job market analysis",
       "Salary trend visualization",
       "In-demand skills insights",
       "Top-paying industries",
@@ -241,12 +241,12 @@ export const projects: Project[] = [
     id: "sign-language-detection",
     name: "Real-Time Sign Language Detection",
     description:
-      "Real-time sign language detection system built with YOLOv11, trained on a custom dataset of 900+ images to recognize 10 gestures with 83% accuracy.",
+      "Real-time sign language detection system built with YOLOv11, trained on a custom image dataset to recognize a set of gestures.",
     features: [
       "Real-time sign language detection",
       "YOLOv11 model",
-      "Custom dataset (900+ images)",
-      "10 gestures · 83% accuracy",
+      "Custom image dataset",
+      "Gesture classification",
     ],
     technologies: ["Python", "YOLOv11", "Machine Learning", "Roboflow"],
     category: "Open Source",

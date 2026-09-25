@@ -4,17 +4,11 @@ import {
   sendTelegramMessage,
   truncateTelegramText,
 } from "@/lib/telegram";
-
-/**
- * POST /api/contact
- * Receives the contact form submission and delivers it to:
- *   1. Telegram (Bot API -> your chat) if TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID are set
- *   2. Email (Resend API -> your inbox) if RESEND_API_KEY is set
- * Returns success only when at least one channel delivered.
- */
+import { siteConfig } from "@/data/site";
 
 interface ContactPayload {
   name?: string;
+  company?: string;
   email?: string;
   phone?: string;
   projectType?: string;
@@ -22,16 +16,16 @@ interface ContactPayload {
   description?: string;
 }
 
-function buildTelegramHtml(p: ContactPayload): string {
+function buildTelegramHtml(payload: ContactPayload): string {
   const rows: Array<[string, string]> = [
-    ["Name", p.name ?? "-"],
-    ["Email", p.email ?? "-"],
-    ["Phone", p.phone ?? "-"],
-    ["Type", p.projectType ?? "-"],
-    ["Budget", p.budget ?? "-"],
+    ["Name", payload.name ?? "-"],
+    ["Company", payload.company ?? "-"],
+    ["Email", payload.email ?? "-"],
+    ["Phone", payload.phone ?? "-"],
+    ["Type", payload.projectType ?? "-"],
+    ["Budget", payload.budget ?? "-"],
   ];
-  // Left-align labels to the widest one so the monospace block lines up.
-  const width = Math.max(...rows.map(([l]) => l.length));
+  const width = Math.max(...rows.map(([label]) => label.length));
   const fieldLines = rows
     .map(
       ([label, value]) =>
@@ -45,24 +39,26 @@ function buildTelegramHtml(p: ContactPayload): string {
     `<code>${escapeTelegramHtml(fieldLines)}</code>`,
     "",
     "<b>Description</b>",
-    `<code>${escapeTelegramHtml(truncateTelegramText(p.description ?? "-", 3000))}</code>`,
+    `<code>${escapeTelegramHtml(truncateTelegramText(payload.description ?? "-", 3000))}</code>`,
   ].join("\n");
 }
 
-function buildEmailHtml(p: ContactPayload): string {
+function buildEmailHtml(payload: ContactPayload): string {
   const fields: Array<[string, string]> = [
-    ["Name", p.name ?? "-"],
-    ["Email", p.email ?? "-"],
-    ["Phone / Telegram", p.phone ?? "-"],
-    ["Project type", p.projectType ?? "-"],
-    ["Budget", p.budget ?? "-"],
+    ["Name", payload.name ?? "-"],
+    ["Company / Organization", payload.company ?? "-"],
+    ["Email", payload.email ?? "-"],
+    ["Phone / Telegram", payload.phone ?? "-"],
+    ["Project type", payload.projectType ?? "-"],
+    ["Budget", payload.budget ?? "-"],
   ];
+
   return `<!doctype html>
 <html>
   <body style="margin:0;padding:0;background:#f4f5f0;">
     <div style="max-width:560px;margin:24px auto;background:#ffffff;border:1px solid #e2e6da;border-radius:12px;overflow:hidden;font-family:Segoe UI, Arial, sans-serif;">
       <div style="background:#0a0c09;color:#b7ff3c;padding:18px 24px;">
-        <span style="font-weight:700;font-size:16px;">New Project Inquiry</span>
+        <span style="font-weight:700;font-size:16px;">2Brothers Services — New Project Inquiry</span>
       </div>
       <div style="padding:24px;">
         <table role="presentation" style="width:100%;border-collapse:collapse;font-size:14px;color:#1c1f18;">
@@ -78,28 +74,28 @@ function buildEmailHtml(p: ContactPayload): string {
         </table>
         <div style="margin-top:16px;padding:14px 16px;background:#f4f5f0;border-left:3px solid #b7ff3c;border-radius:6px;">
           <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#6a7360;margin-bottom:6px;">Description</div>
-          <div style="font-size:14px;color:#1c1f18;white-space:pre-wrap;">${escapeTelegramHtml(p.description ?? "-")}</div>
+          <div style="font-size:14px;color:#1c1f18;white-space:pre-wrap;">${escapeTelegramHtml(payload.description ?? "-")}</div>
         </div>
       </div>
       <div style="padding:12px 24px;background:#fafbf8;border-top:1px solid #e2e6da;font-size:12px;color:#9aa28d;">
-        Sent from the RIN Nairith services site.
+        Sent from the 2Brothers Services website.
       </div>
     </div>
   </body>
 </html>`;
 }
 
-async function deliverTelegram(p: ContactPayload): Promise<void> {
-  await sendTelegramMessage(buildTelegramHtml(p));
+async function deliverTelegram(payload: ContactPayload): Promise<void> {
+  await sendTelegramMessage(buildTelegramHtml(payload));
 }
 
-async function deliverEmail(p: ContactPayload): Promise<void> {
+async function deliverEmail(payload: ContactPayload): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.CONTACT_EMAIL_FROM ?? "RIN NAIRITH <onboarding@resend.dev>";
-  const to = process.env.CONTACT_EMAIL_TO ?? "nairithrin143@gmail.com";
-  if (!apiKey) throw new Error("RESEND_API_KEY not set");
+  const from = process.env.CONTACT_EMAIL_FROM ?? "2Brothers Services <onboarding@resend.dev>";
+  const to = process.env.CONTACT_EMAIL_TO ?? siteConfig.email;
+  if (!apiKey) throw new Error("RESEND_API_KEY is not configured");
 
-  const res = await fetch("https://api.resend.com/emails", {
+  const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -108,15 +104,14 @@ async function deliverEmail(p: ContactPayload): Promise<void> {
     body: JSON.stringify({
       from,
       to: [to],
-      subject: `New project inquiry from ${p.name ?? "the site"}`,
-      html: buildEmailHtml(p),
-      reply_to: p.email,
+      subject: `New 2Brothers Services inquiry from ${payload.name ?? "the website"}`,
+      html: buildEmailHtml(payload),
+      reply_to: payload.email,
     }),
   });
 
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new Error(`Resend ${res.status}: ${body}`);
+  if (!response.ok) {
+    throw new Error(`Resend request failed with status ${response.status}`);
   }
 }
 
@@ -131,65 +126,60 @@ export async function POST(request: Request) {
     );
   }
 
-  const name = (payload.name ?? "").trim();
-  const email = (payload.email ?? "").trim();
-  const description = (payload.description ?? "").trim();
+  const submission: ContactPayload = {
+    name: (payload.name ?? "").trim(),
+    company: (payload.company ?? "").trim(),
+    email: (payload.email ?? "").trim(),
+    phone: (payload.phone ?? "").trim(),
+    projectType: (payload.projectType ?? "").trim(),
+    budget: (payload.budget ?? "").trim(),
+    description: (payload.description ?? "").trim(),
+  };
 
-  if (!name || !description) {
+  if (!submission.name || !submission.description) {
     return NextResponse.json(
       { ok: false, error: "Name and description are required." },
       { status: 400 }
     );
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submission.email ?? "")) {
     return NextResponse.json(
       { ok: false, error: "A valid email is required." },
       { status: 400 }
     );
   }
 
-  const exc = payload;
   const results: string[] = [];
   const errors: string[] = [];
 
-  // Try Telegram first; if it fails, fall through to email.
-  const tg = await deliverTelegram(exc).then(
-    () => results.push("telegram"),
-    (e: unknown) => errors.push(String((e as Error).message))
-  );
-  void tg;
-
-  // Always try email too (both channels were requested).
-  const em = await deliverEmail(exc).then(
-    () => results.push("email"),
-    (e: unknown) => errors.push(String((e as Error).message))
-  );
-  void em;
-
-  console.log(
-    `[contact] "${name}" <${email}> → delivered: ${results.join(", ") || "NONE"}` +
-      (errors.length ? ` | errors: ${errors.join(" | ")}` : "")
-  );
-
-  if (results.length > 0) {
-    // Partial success: flag it when only one channel delivered.
-    const everythingOk = results.length === 2;
-    return NextResponse.json(
-      {
-        ok: true,
-        delivered: results,
-        warning: everythingOk ? null : errors[0] ?? "One channel failed.",
-      },
-      { status: 200 }
-    );
+  try {
+    await deliverTelegram(submission);
+    results.push("telegram");
+  } catch (error) {
+    errors.push(error instanceof Error ? error.message : "Telegram delivery failed");
   }
 
+  try {
+    await deliverEmail(submission);
+    results.push("email");
+  } catch (error) {
+    errors.push(error instanceof Error ? error.message : "Email delivery failed");
+  }
+
+  if (results.length > 0) {
+    return NextResponse.json({
+      ok: true,
+      delivered: results,
+      warning: results.length === 2 ? null : "One delivery channel was unavailable.",
+    });
+  }
+
+  console.error("[contact] all delivery channels failed", errors);
   return NextResponse.json(
     {
       ok: false,
       error: "Could not deliver the message.",
-      details: errors,
-      hint: "Configure TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID and RESEND_API_KEY.",
+      hint: "Configure the contact delivery environment variables.",
     },
     { status: 502 }
   );

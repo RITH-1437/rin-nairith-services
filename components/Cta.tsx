@@ -6,7 +6,8 @@ import Reveal from "./Reveal";
 import { socialLinks } from "@/data/social";
 
 export default function Cta() {
-  const telegram = socialLinks.find((s) => s.name === "telegram");
+  const telegram = socialLinks.find((social) => social.name === "telegram");
+
   return (
     <section className="relative overflow-hidden py-24">
       <div className="absolute inset-0">
@@ -15,12 +16,16 @@ export default function Cta() {
       </div>
 
       <Reveal className="container-page relative z-10 text-center">
+        <p className="section-label justify-center">
+          <span aria-hidden="true" className="h-px w-6 bg-lime/60" />
+          Start a conversation
+        </p>
         <h2 className="mx-auto max-w-2xl text-3xl font-bold leading-tight text-fg sm:text-4xl">
-          Have an Idea? Let's Build It.
+          Have a digital idea? Let&apos;s make it real.
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-fgMuted">
-          Tell me what you need and let's turn your idea into a working digital
-          product.
+          Tell us what you need and we&apos;ll help you find a clear path from
+          requirements to a working product.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
           <a href="#contact" className="btn-primary px-7 py-3.5">
@@ -34,7 +39,7 @@ export default function Cta() {
             className="btn-secondary px-7 py-3.5"
           >
             <MessageCircle aria-hidden="true" className="h-4 w-4" />
-            Message Me
+            Message Us
           </a>
         </div>
       </Reveal>

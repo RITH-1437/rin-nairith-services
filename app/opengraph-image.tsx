@@ -3,7 +3,7 @@ import { siteConfig } from "@/data/site";
 
 export const runtime = "nodejs";
 
-export const alt = `${siteConfig.name} — Software Developer`;
+export const alt = `${siteConfig.name} — Digital Solutions for Modern Businesses`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -23,7 +23,6 @@ export default async function OgImage() {
           color: "#f0f3ec",
         }}
       >
-        {/* code-inspired "</>" mark */}
         <div
           style={{
             display: "flex",
@@ -53,32 +52,32 @@ export default async function OgImage() {
         </div>
         <div
           style={{
-            fontSize: 92,
+            fontSize: 78,
             fontWeight: 700,
             lineHeight: 1.05,
-            letterSpacing: "0.04em",
+            letterSpacing: "0.02em",
             color: "#f0f3ec",
           }}
         >
-          RIN NAIRITH
+          2Brothers Services
         </div>
         <div
           style={{
-            fontSize: 34,
+            fontSize: 36,
             color: "#b7ff3c",
             marginTop: 20,
           }}
         >
-          Software Developer
+          Digital solutions for modern businesses
         </div>
         <div
           style={{
-            fontSize: 28,
+            fontSize: 26,
             color: "#9aa49a",
-            marginTop: 12,
+            marginTop: 16,
           }}
         >
-          Software Development • Web Applications • APIs • Cloud • Open Source
+          Websites • Business Systems • APIs • Cloud
         </div>
       </div>
     ),

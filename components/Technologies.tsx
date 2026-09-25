@@ -7,9 +7,9 @@ export default function Technologies() {
     <section id="technologies" className="section bg-bgSoft">
       <div className="container-page">
         <SectionHeading
-          label="Technologies"
-          title="Technologies I Work With"
-          description="A stack built on widely adopted, maintainable tools — from frontend to backend, databases, and cloud infrastructure."
+          label="Technology"
+          title="Tools for the work"
+          description="We work across the layers that make a digital product useful: interfaces, applications, data, infrastructure, and delivery."
         />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {technologyGroups.map((group, g) => (

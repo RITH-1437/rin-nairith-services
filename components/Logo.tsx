@@ -4,17 +4,14 @@ interface LogoProps {
   className?: string;
 }
 
-/**
- * Code-inspired logo mark: </> in monospace lime, followed by the wordmark.
- */
 export default function Logo({ className }: LogoProps) {
   return (
-    <span className={`inline-flex items-baseline gap-1.5 ${className ?? ""}`}>
+    <span className={`inline-flex items-center gap-2 ${className ?? ""}`}>
       <span className="font-mono text-lg font-semibold leading-none text-lime">
         {siteConfig.logo}
       </span>
-      <span className="font-semibold tracking-[0.12em] text-fg">
-        Two Brothers
+      <span className="text-sm font-semibold tracking-[0.08em] text-fg sm:text-base">
+        2Brothers Services
       </span>
     </span>
   );

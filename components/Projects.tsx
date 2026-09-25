@@ -11,17 +11,16 @@ const filters = ["All", ...projectCategories] as const;
 
 export default function Projects() {
   const [active, setActive] = useState<string>("All");
-
   const visible =
-    active === "All" ? projects : projects.filter((p) => p.category === active);
+    active === "All" ? projects : projects.filter((project) => project.category === active);
 
   return (
     <section id="projects" className="section">
       <div className="container-page">
         <SectionHeading
-          label="Portfolio"
+          label="Work"
           title="Selected Work"
-          description="Real projects I've designed, built, and deployed — open-source tools, web applications, and cloud-deployed systems."
+          description="Explore projects spanning websites, applications, data tools, frameworks, and open-source software."
         />
 
         <div
@@ -62,7 +61,7 @@ export default function Projects() {
             rel="noopener noreferrer"
             className="btn-secondary"
           >
-            View All on GitHub
+            View Project Sources
             <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
           </a>
         </div>

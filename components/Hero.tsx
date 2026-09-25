@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, FolderOpen } from "lucide-react";
+import { ArrowRight, FolderOpen } from "lucide-react";
 import NetworkBackground from "./NetworkBackground";
 import { siteConfig } from "@/data/site";
 
@@ -13,6 +13,13 @@ const fadeUp = {
     transition: { duration: 0.7, delay: 0.1 * i, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
+
+const buildAreas = [
+  "Websites and digital experiences",
+  "Business systems and dashboards",
+  "APIs, integrations, and data tools",
+  "Cloud deployment and maintenance",
+];
 
 export default function Hero() {
   return (
@@ -26,79 +33,109 @@ export default function Hero() {
       </div>
 
       <div className="container-page relative z-10">
-        <div className="max-w-3xl">
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={0}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime/30 bg-lime/10 px-4 py-1.5 font-mono text-xs font-medium tracking-wide text-lime"
-          >
-            <span
-              aria-hidden="true"
-              className="h-1.5 w-1.5 rounded-full bg-lime animate-slow-pulse"
-            />
-            Available for Freelance Projects
-          </motion.p>
+        <div className="grid items-center gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-20">
+          <div className="max-w-3xl">
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={0}
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime/30 bg-lime/10 px-4 py-1.5 font-mono text-xs font-medium tracking-wide text-lime"
+            >
+              <span
+                aria-hidden="true"
+                className="h-1.5 w-1.5 rounded-full bg-lime animate-slow-pulse"
+              />
+              Digital solutions for modern businesses
+            </motion.p>
 
-          <motion.h1
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={1}
-            className="text-4xl font-bold leading-[1.08] tracking-tight text-fg sm:text-5xl lg:text-6xl"
-          >
-            I Build Software That{" "}
-            <span className="text-lime">Solves Real Problems.</span>
-          </motion.h1>
+            <motion.h1
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={1}
+              className="text-4xl font-bold leading-[1.08] tracking-tight text-fg sm:text-5xl lg:text-6xl"
+            >
+              Digital Solutions Built for Modern{" "}
+              <span className="text-lime">Businesses.</span>
+            </motion.h1>
 
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={2}
-            className="mt-6 max-w-2xl text-lg leading-relaxed text-fgMuted"
-          >
-            I'm {siteConfig.developerName}, a Software Developer building
-            reliable web applications, APIs, developer tools, and
-            cloud-deployed systems.
-          </motion.p>
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={2}
+              className="mt-6 max-w-2xl text-lg leading-relaxed text-fgMuted"
+            >
+              2Brothers Services builds tailored websites, business management
+              systems, AI applications, and custom software solutions for
+              modern businesses.
+            </motion.p>
+
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={3}
+              className="mt-9 flex flex-wrap items-center gap-4"
+            >
+              <a href="#contact" className="btn-primary px-7 py-3.5">
+                Start a Project
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </a>
+              <a href="#projects" className="btn-secondary px-7 py-3.5">
+                <FolderOpen aria-hidden="true" className="h-4 w-4" />
+                View Selected Work
+              </a>
+            </motion.div>
+
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={4}
+              className="mt-12 font-mono text-xs uppercase tracking-[0.2em] text-fgFaint"
+            >
+              {siteConfig.tagline}
+            </motion.p>
+          </div>
 
           <motion.div
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            custom={3}
-            className="mt-9 flex flex-wrap items-center gap-4"
+            custom={2}
+            className="rounded-2xl border border-lineStrong bg-panel/90 p-6 shadow-[0_0_50px_rgba(183,255,60,0.08)] backdrop-blur sm:p-8"
           >
-            <a href="#contact" className="btn-primary px-7 py-3.5">
-              Start a Project
-              <ArrowRight aria-hidden="true" className="h-4 w-4" />
-            </a>
-            <a href="#projects" className="btn-secondary px-7 py-3.5">
-              <FolderOpen aria-hidden="true" className="h-4 w-4" />
-              View My Work
-            </a>
-            <a
-              href={siteConfig.portfolioUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary px-7 py-3.5"
-            >
-              Full Portfolio
-              <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
-            </a>
+            <div className="flex items-center gap-3 border-b border-line pb-6">
+              <span className="font-mono text-2xl font-semibold text-lime">
+                {siteConfig.logo}
+              </span>
+              <div>
+                <p className="font-semibold text-fg">2Brothers Services</p>
+                <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-fgMuted">
+                  From idea to launch
+                </p>
+              </div>
+            </div>
+            <p className="mt-6 text-lg font-medium leading-snug text-fg">
+              One team for the digital layer your business depends on.
+            </p>
+            <ul className="mt-6 space-y-3">
+              {buildAreas.map((area) => (
+                <li key={area} className="flex items-start gap-3 text-sm text-fgMuted">
+                  <span
+                    aria-hidden="true"
+                    className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-lime"
+                  />
+                  {area}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-7 border-t border-line pt-5 font-mono text-xs uppercase tracking-[0.16em] text-fgFaint">
+              Web&nbsp;&nbsp;•&nbsp;&nbsp;Systems&nbsp;&nbsp;•&nbsp;&nbsp;Data&nbsp;&nbsp;•&nbsp;&nbsp;Cloud
+            </div>
           </motion.div>
-
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={4}
-            className="mt-12 font-mono text-xs uppercase tracking-[0.2em] text-fgFaint"
-          >
-            Software Development&ensp;•&ensp;Web Applications&ensp;•&ensp;APIs&ensp;•&ensp;Cloud&ensp;•&ensp;Open Source
-          </motion.p>
         </div>
       </div>
     </section>

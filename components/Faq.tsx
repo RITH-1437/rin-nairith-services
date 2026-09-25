@@ -16,7 +16,7 @@ export default function Faq() {
         <SectionHeading
           label="FAQ"
           title="Common Questions"
-          description="Answers to the questions I'm asked most often before starting a project."
+          description="Helpful answers about scope, timing, technology, and starting a project with 2Brothers Services."
         />
         <Reveal>
           <div className="mx-auto max-w-2xl divide-y divide-line overflow-hidden rounded-lg border border-line bg-panel">

@@ -1,8 +1,10 @@
 import Hero from "@/components/Hero";
+import CapabilityStrip from "@/components/CapabilityStrip";
 import Services from "@/components/Services";
 import Technologies from "@/components/Technologies";
-import Projects from "@/components/Projects";
+import WhyUs from "@/components/WhyUs";
 import Process from "@/components/Process";
+import Projects from "@/components/Projects";
 import Pricing from "@/components/Pricing";
 import About from "@/components/About";
 import Collaborators from "@/components/Collaborators";
@@ -14,10 +16,12 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <CapabilityStrip />
       <Services />
       <Technologies />
-      <Projects />
+      <WhyUs />
       <Process />
+      <Projects />
       <Pricing />
       <About />
       <Collaborators />

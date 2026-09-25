@@ -13,6 +13,7 @@ const projectTypes = [
   "Web Application",
   "Backend & API",
   "Admin System",
+  "AI or Data Application",
   "Cloud Deployment",
   "Software Maintenance",
   "Other",
@@ -29,6 +30,7 @@ const budgets = [
 
 interface FormData {
   name: string;
+  company: string;
   email: string;
   phone: string;
   projectType: string;
@@ -38,6 +40,7 @@ interface FormData {
 
 const emptyForm: FormData = {
   name: "",
+  company: "",
   email: "",
   phone: "",
   projectType: "",
@@ -53,8 +56,8 @@ export default function Contact() {
   const [warning, setWarning] = useState<string | null>(null);
 
   const setField = (field: keyof FormData, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: undefined }));
+    setForm((previous) => ({ ...previous, [field]: value }));
+    setErrors((previous) => ({ ...previous, [field]: undefined }));
   };
 
   const validate = (): boolean => {
@@ -71,53 +74,42 @@ export default function Contact() {
     return Object.keys(next).length === 0;
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
     if (!validate()) return;
 
     setStatus("submitting");
     setError(null);
 
     try {
-      const res = await fetch("/api/contact", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          projectType: form.projectType,
-          budget: form.budget,
-          description: form.description,
-        }),
+        body: JSON.stringify(form),
       });
+      const data = await response.json().catch(() => ({ ok: false }));
 
-      const data = await res.json().catch(() => ({ ok: false }));
-
-      if (!res.ok || !data.ok) {
+      if (!response.ok || !data.ok) {
         throw new Error(data.error ?? "Something went wrong sending your message.");
       }
 
       setStatus("success");
       setWarning(data.warning ?? null);
       setForm(emptyForm);
-    } catch (err) {
-      console.error("Contact form error:", err);
+    } catch (submissionError) {
       setStatus("error");
       setWarning(null);
       setError(
-        err instanceof Error
-          ? err.message
-          : "Could not send your message. Please try again or reach me directly."
+        submissionError instanceof Error
+          ? submissionError.message
+          : "Could not send your message. Please try again or contact us directly."
       );
     }
   };
 
   const fieldClass = (hasError: boolean) =>
     `w-full rounded-md border bg-bg px-3.5 py-2.5 text-sm text-fg placeholder:text-fgFaint transition-colors ${
-      hasError
-        ? "border-red-500/60 focus:border-red-500"
-        : "border-line focus:border-lime"
+      hasError ? "border-red-500/60 focus:border-red-500" : "border-line focus:border-lime"
     }`;
 
   const labelClass = "mb-1.5 block text-sm text-fgMuted";
@@ -129,11 +121,11 @@ export default function Contact() {
           <SectionHeading
             label="Contact"
             title="Start Your Project"
-            description="Tell me about your idea and I'll get back to you. You can also reach me directly through any channel below."
+            description="Tell us what you are building, what problem you want to solve, and what a successful outcome looks like."
           />
-          <p className="-mt-6 text-sm text-fgMuted">
-            Prefer a quick conversation? Message me on Telegram — it's the
-            fastest way to reach me.
+          <p className="-mt-6 text-sm leading-relaxed text-fgMuted">
+            Prefer a quick conversation? Email or Telegram is the fastest way
+            to reach the team.
           </p>
           <SocialLinks className="mt-6" />
         </div>
@@ -149,12 +141,10 @@ export default function Contact() {
                 role="status"
               >
                 <CheckCircle2 aria-hidden="true" className="h-12 w-12 text-lime" />
-                <h3 className="mt-4 text-xl font-semibold text-fg">
-                  Message Sent
-                </h3>
-                <p className="mt-2 max-w-sm text-sm text-fgMuted">
-                  Thanks for reaching out! I'll get back to you as soon as
-                  possible. Meanwhile, you can message me directly.
+                <h3 className="mt-4 text-xl font-semibold text-fg">Message sent</h3>
+                <p className="mt-2 max-w-sm text-sm leading-relaxed text-fgMuted">
+                  Thanks for reaching out. We&apos;ll review the details and get
+                  back to you as soon as possible.
                 </p>
                 {warning ? (
                   <p className="mt-3 max-w-sm rounded-md border border-amber-400/50 bg-amber-400/10 px-3 py-2 text-xs text-amber-300">
@@ -169,7 +159,7 @@ export default function Contact() {
                   }}
                   className="btn-secondary mt-6"
                 >
-                  Send Another Message
+                  Send another message
                 </button>
               </motion.div>
             ) : (
@@ -192,7 +182,7 @@ export default function Contact() {
                       type="text"
                       autoComplete="name"
                       value={form.name}
-                      onChange={(e) => setField("name", e.target.value)}
+                      onChange={(event) => setField("name", event.target.value)}
                       className={fieldClass(!!errors.name)}
                       placeholder="Your name"
                       aria-invalid={!!errors.name}
@@ -213,7 +203,7 @@ export default function Contact() {
                       type="email"
                       autoComplete="email"
                       value={form.email}
-                      onChange={(e) => setField("email", e.target.value)}
+                      onChange={(event) => setField("email", event.target.value)}
                       className={fieldClass(!!errors.email)}
                       placeholder="you@example.com"
                       aria-invalid={!!errors.email}
@@ -227,26 +217,42 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="contact-phone" className={labelClass}>
-                    Telegram / Phone *
-                  </label>
-                  <input
-                    id="contact-phone"
-                    type="text"
-                    autoComplete="tel"
-                    value={form.phone}
-                    onChange={(e) => setField("phone", e.target.value)}
-                    className={fieldClass(!!errors.phone)}
-                    placeholder="@username or phone number"
-                    aria-invalid={!!errors.phone}
-                    aria-describedby={errors.phone ? "err-phone" : undefined}
-                  />
-                  {errors.phone ? (
-                    <p id="err-phone" className="mt-1 text-xs text-red-400">
-                      {errors.phone}
-                    </p>
-                  ) : null}
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="contact-company" className={labelClass}>
+                      Company / Organization
+                    </label>
+                    <input
+                      id="contact-company"
+                      type="text"
+                      autoComplete="organization"
+                      value={form.company}
+                      onChange={(event) => setField("company", event.target.value)}
+                      className={fieldClass(false)}
+                      placeholder="Your company"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-phone" className={labelClass}>
+                      Telegram / Phone *
+                    </label>
+                    <input
+                      id="contact-phone"
+                      type="text"
+                      autoComplete="tel"
+                      value={form.phone}
+                      onChange={(event) => setField("phone", event.target.value)}
+                      className={fieldClass(!!errors.phone)}
+                      placeholder="@username or phone number"
+                      aria-invalid={!!errors.phone}
+                      aria-describedby={errors.phone ? "err-phone" : undefined}
+                    />
+                    {errors.phone ? (
+                      <p id="err-phone" className="mt-1 text-xs text-red-400">
+                        {errors.phone}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
 
                 <div className="grid gap-5 sm:grid-cols-2">
@@ -257,7 +263,7 @@ export default function Contact() {
                     <select
                       id="contact-type"
                       value={form.projectType}
-                      onChange={(e) => setField("projectType", e.target.value)}
+                      onChange={(event) => setField("projectType", event.target.value)}
                       className={fieldClass(!!errors.projectType)}
                       aria-invalid={!!errors.projectType}
                       aria-describedby={errors.projectType ? "err-type" : undefined}
@@ -284,7 +290,7 @@ export default function Contact() {
                     <select
                       id="contact-budget"
                       value={form.budget}
-                      onChange={(e) => setField("budget", e.target.value)}
+                      onChange={(event) => setField("budget", event.target.value)}
                       className={fieldClass(false)}
                     >
                       <option value="" disabled>
@@ -307,9 +313,9 @@ export default function Contact() {
                     id="contact-desc"
                     rows={4}
                     value={form.description}
-                    onChange={(e) => setField("description", e.target.value)}
+                    onChange={(event) => setField("description", event.target.value)}
                     className={fieldClass(!!errors.description)}
-                    placeholder="Briefly describe what you'd like to build..."
+                    placeholder="Briefly describe what you would like to build..."
                     aria-invalid={!!errors.description}
                     aria-describedby={errors.description ? "err-desc" : undefined}
                   />

@@ -1,15 +1,13 @@
-import { MapPin, Github, Download } from "lucide-react";
+import { ArrowRight, Github, MapPin } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 import { siteConfig } from "@/data/site";
 
 const focus = [
-  "Software Development",
-  "RESTful API Design",
-  "Relational Database Design",
-  "Cloud Infrastructure (AWS)",
-  "CI/CD & GitHub Actions",
-  "Framework Architecture",
+  "Websites and digital experiences",
+  "Business management systems",
+  "APIs, integrations, and data tools",
+  "Cloud deployment and maintenance",
 ];
 
 export default function About() {
@@ -19,41 +17,27 @@ export default function About() {
         <Reveal>
           <SectionHeading
             label="About"
-            title="A Developer Building Production Software"
+            title="A two-person team for practical digital work"
           />
           <p className="-mt-6 text-base leading-relaxed text-fgMuted">
-            I'm a Software Developer with a passion for clean architecture,
-            developer tooling, and shipping production-ready software. I founded
-            the{" "}
-            <span className="font-semibold text-fg">ZeroPing PHP Framework</span>{" "}
-            and have deployed multiple applications on AWS EC2 with Docker,
-            Nginx, and CI/CD pipelines.
+            2Brothers Services is a digital solutions company focused on clear,
+            useful software. We work with founders, teams, and organizations
+            that need a better website, a more organized operation, or a
+            custom application to support their work.
           </p>
-          <p className="mt-4 flex items-center gap-2 text-sm text-fgMuted">
+          <p className="mt-4 text-base leading-relaxed text-fgMuted">
+            Our approach combines product thinking, hands-on development, and
+            practical deployment experience. The goal is to make the next step
+            clear and the final product dependable.
+          </p>
+          <p className="mt-6 flex items-center gap-2 text-sm text-fgMuted">
             <MapPin aria-hidden="true" className="h-4 w-4 text-lime" />
             {siteConfig.location}
           </p>
-          <p className="mt-6 text-sm leading-relaxed text-fgMuted">
-            Based in Cambodia, I'm currently working at{" "}
-            <span className="font-medium text-fg">
-              {siteConfig.experience.current.company}
-            </span>{" "}
-            as a {siteConfig.experience.current.role} while continuing to expand
-            my skills in cloud infrastructure, system design, and modern web
-            development.
-          </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <a href="#contact" className="btn-primary">
-              Let's Work Together
-            </a>
-            <a
-              href={siteConfig.cv}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary"
-            >
-              <Download aria-hidden="true" className="h-4 w-4" />
-              Download CV
+              Work with us
+              <ArrowRight aria-hidden="true" className="h-4 w-4" />
             </a>
             <a
               href="https://github.com/RITH-1437"
@@ -62,83 +46,33 @@ export default function About() {
               className="btn-secondary"
             >
               <Github aria-hidden="true" className="h-4 w-4" />
-              Open Source
+              View GitHub
             </a>
-          </div>
-
-          <div className="mt-10 grid grid-cols-3 gap-4 border-t border-line pt-8">
-            {siteConfig.stats.map((stat) => (
-              <div key={stat.label}>
-                <p className="text-2xl font-bold text-lime sm:text-3xl">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-xs uppercase tracking-wider text-fgMuted">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
           </div>
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="rounded-xl border border-line bg-panel p-7">
-            <h3 className="font-mono text-sm uppercase tracking-[0.18em] text-lime">
-              Professional Focus
+          <div className="rounded-xl border border-line bg-panel p-7 sm:p-8">
+            <p className="font-mono text-sm uppercase tracking-[0.18em] text-lime">
+              Our focus
+            </p>
+            <h3 className="mt-4 text-xl font-semibold text-fg">
+              Useful software, built with care.
             </h3>
-            <ul className="mt-5 space-y-3">
+            <ul className="mt-6 space-y-4">
               {focus.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-center gap-3 text-fg"
-                >
+                <li key={item} className="flex items-start gap-3 text-fg">
                   <span
                     aria-hidden="true"
-                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-lime"
+                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-lime"
                   />
-                  {item}
+                  <span>{item}</span>
                 </li>
               ))}
             </ul>
-          </div>
-        </Reveal>
-      </div>
-
-      {/* Career timeline (real experience history) */}
-      <div className="container-page mt-16">
-        <Reveal>
-          <h3 className="font-mono text-sm uppercase tracking-[0.18em] text-lime">
-            Experience
-          </h3>
-          <div className="mt-6 space-y-6">
-            {siteConfig.experience.history.map((job) => (
-              <div
-                key={`${job.company}-${job.role}`}
-                className="relative border-l-2 border-line pl-6 sm:pl-8"
-              >
-                <span
-                  aria-hidden="true"
-                  className="absolute -left-[5px] top-1.5 h-2 w-2 rounded-full bg-lime"
-                />
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="font-semibold text-fg">{job.role}</p>
-                  <p className="font-mono text-xs text-fgMuted">{job.period}</p>
-                </div>
-                <p className="text-sm text-lime">{job.company}</p>
-                <p className="mt-2 text-sm leading-relaxed text-fgMuted">
-                  {job.description}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {job.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-line px-2.5 py-0.5 font-mono text-[11px] text-fgMuted"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
+            <div className="mt-8 border-t border-line pt-5 font-mono text-xs uppercase tracking-[0.16em] text-fgFaint">
+              {siteConfig.role}
+            </div>
           </div>
         </Reveal>
       </div>

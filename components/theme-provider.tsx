@@ -12,7 +12,7 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
-const STORAGE_KEY = "rin-theme";
+const STORAGE_KEY = "2brothers-theme";
 
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") return "dark";
@@ -24,16 +24,11 @@ function getInitialTheme(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
-
-  useEffect(() => {
-    setThemeState(getInitialTheme());
-  }, []);
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     window.localStorage.setItem(STORAGE_KEY, theme);
-    // Notify the network background (and others) to re-read theme colors
     window.dispatchEvent(new Event("themechange"));
   }, [theme]);
 

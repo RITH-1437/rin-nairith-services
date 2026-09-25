@@ -1,11 +1,5 @@
 import { siteConfig } from "@/data/site";
 
-/**
- * "RIN NAIRITH" signature rendered as a clean, scalable SVG wordmark.
- * Terminal-inspired using only safe text + shapes (no exotic glyphs).
- * Colors are applied via CSS custom properties (rgb channel format), so the
- * mark is white in dark mode and dark in light mode, with lime accents.
- */
 export default function RinWordmark({
   className = "h-9 w-auto sm:h-12",
 }: {
@@ -16,7 +10,7 @@ export default function RinWordmark({
 
   return (
     <svg
-      viewBox="0 0 720 180"
+      viewBox="0 0 900 180"
       role="img"
       aria-label={siteConfig.name}
       className={className}
@@ -24,7 +18,6 @@ export default function RinWordmark({
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="xMidYMid meet"
     >
-      {/* Command prompt prefix (lime) */}
       <text
         x="16"
         y="46"
@@ -33,39 +26,44 @@ export default function RinWordmark({
         letterSpacing="1"
         style={{ fill: "rgb(var(--accent))" }}
       >
-        {">"} ~/rin-nairith
+        {">"} ~/2brothers-services
       </text>
-
-      {/* The name — large, filled with lime accent */}
       <text
         x="16"
-        y="122"
+        y="126"
         fontFamily={mono}
         fontWeight="700"
-        fontSize="56"
-        letterSpacing="8"
+        fontSize="52"
+        letterSpacing="5"
         style={{ fill: "rgb(var(--accent))" }}
       >
-        RIN NAIRITH
+        2BROTHERS
       </text>
-
-      {/* Thin lime rule under the name */}
+      <text
+        x="520"
+        y="126"
+        fontFamily={mono}
+        fontWeight="500"
+        fontSize="52"
+        letterSpacing="5"
+        style={{ fill: "rgb(var(--fg))" }}
+      >
+        SERVICES
+      </text>
       <line
         x1="18"
-        y1="144"
-        x2="700"
-        y2="144"
+        y1="148"
+        x2="880"
+        y2="148"
         strokeWidth="2"
         strokeLinecap="round"
         style={{ stroke: "var(--line-strong)" }}
       />
-
-      {/* Terminal cursor block (lime) */}
       <rect
-        x="702"
+        x="882"
         y="100"
         width="10"
-        height="44"
+        height="48"
         style={{ fill: "rgb(var(--accent))" }}
       />
     </svg>

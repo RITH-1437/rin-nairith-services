@@ -9,8 +9,8 @@ export default function Services() {
       <div className="container-page">
         <SectionHeading
           label="Services"
-          title="What I Can Build For You"
-          description="From a landing page to a complete web application deployed to the cloud, I build reliable software tailored to your goals."
+          title="What We Build"
+          description="From a focused website to a complete business platform, we build software around the way your organization works."
         />
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, i) => (

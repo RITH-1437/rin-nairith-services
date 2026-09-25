@@ -10,8 +10,9 @@ export default function Pricing() {
         <SectionHeading
           label="Pricing"
           title="Simple Starting Packages"
-          description="Transparent starting prices for common project types. Every project is estimated after a quick discussion."
-        />        <div className="grid gap-5 md:grid-cols-3">
+          description="A practical starting point for common project types. We refine the scope and estimate after a short conversation."
+        />
+        <div className="grid gap-5 md:grid-cols-3">
           {pricingPlans.map((plan, i) => (
             <Reveal key={plan.id} delay={i * 0.08}>
               <PricingCard plan={plan} />

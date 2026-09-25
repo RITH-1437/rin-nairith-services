@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
-import { siteConfig } from "@/data/site";
 
 const navLinks = [
-  { label: "Home", href: "#home" },
   { label: "Services", href: "#services" },
-  { label: "Projects", href: "#projects" },
+  { label: "Why Us", href: "#why" },
   { label: "Process", href: "#process" },
+  { label: "Work", href: "#projects" },
   { label: "Pricing", href: "#pricing" },
   { label: "About", href: "#about" },
   { label: "Team", href: "#team" },
@@ -33,11 +32,9 @@ export default function Navbar() {
     setOpen(false);
   };
 
-  // Scroll spy: highlight the section currently in view.
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 12);
-
       const probe = window.innerHeight * 0.35;
       let current = "home";
       for (const link of navLinks) {
@@ -80,7 +77,7 @@ export default function Navbar() {
             scrollTo("#home");
           }}
           className="shrink-0"
-          aria-label="Two Brothers — home"
+          aria-label="2Brothers Services — home"
         >
           <Logo />
         </a>
@@ -127,7 +124,7 @@ export default function Navbar() {
             }}
             className="group hidden items-center gap-1 rounded-md border border-lime/40 bg-transparent px-4 py-2 text-sm font-medium text-lime transition-all duration-200 hover:border-lime hover:bg-lime hover:text-bg hover:shadow-[0_0_18px_rgba(183,255,60,0.4)] sm:inline-flex"
           >
-            Hire Me
+            Start a project
             <ArrowUpRight
               aria-hidden="true"
               className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -186,22 +183,6 @@ export default function Navbar() {
                   </motion.li>
                 );
               })}
-              <motion.li
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.04 * navLinks.length }}
-                className="mt-2"
-              >
-                <a
-                  href={siteConfig.portfolioUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between rounded-md border border-lime/40 bg-lime/10 px-3 py-3 font-medium text-lime"
-                >
-                  Full Portfolio
-                  <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
-                </a>
-              </motion.li>
             </ul>
           </motion.div>
         ) : null}
