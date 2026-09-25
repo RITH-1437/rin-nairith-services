@@ -5,7 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingCta from "@/components/FloatingCta";
-import { ThemeProvider } from "@/components/theme-provider";
+import { DocumentScripts, ThemeProvider } from "@/components/theme-provider";
 import { siteConfig } from "@/data/site";
 
 const inter = Inter({
@@ -93,18 +93,6 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "#f8f9f4" },
   ],
 };
-
-const themeScript = `
-(function () {
-  try {
-    var stored = localStorage.getItem('2brothers-theme');
-    var theme = stored === 'dark' || stored === 'light'
-      ? stored
-      : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    document.documentElement.setAttribute('data-theme', theme);
-  } catch (e) {}
-})();
-`;
 
 const cursorScript = `
 (function () {
@@ -198,20 +186,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <Script id="theme-script" strategy="beforeInteractive">
-          {themeScript}
-        </Script>
         <Script id="cursor-script" strategy="afterInteractive">
           {cursorScript}
         </Script>
-        <Script
-          id="structured-data"
-          type="application/ld+json"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{ __html: structuredData }}
-        />
       </head>
       <body className="font-sans">
+        <DocumentScripts structuredData={structuredData} />
         <ThemeProvider>
           <Navbar />
           <main id="main">{children}</main>
