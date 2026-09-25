@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   notify:
+    environment: telegram
     runs-on: ubuntu-latest
     steps:
       - name: Send Telegram notification
@@ -23,7 +24,7 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -z "$TELEGRAM_BOT_TOKEN" || -z "$TELEGRAM_CHAT_ID" ]]; then
-            echo "::error::TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID must be configured as GitHub Actions repository secrets."
+            echo "::error::TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID must be configured as secrets in the telegram GitHub environment."
             exit 1
           fi
           text=$(printf 'Push to %s\nBranch: %s\nCommit: %s\nAuthor: %s\n\n%s' "$REPOSITORY" "$BRANCH" "$COMMIT" "$ACTOR" "$COMMIT_MESSAGE")
