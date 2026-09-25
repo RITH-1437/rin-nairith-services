@@ -34,13 +34,13 @@ function SocialIconLink({
 function TeamCard({ person }: { person: Collaborator }) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-panel transition-all duration-300 hover:-translate-y-1 hover:border-lime/40 hover:shadow-[0_0_24px_rgba(183,255,60,0.08)]">
-      <div className="relative aspect-[4/3] overflow-hidden border-b border-line sm:aspect-[16/10]">
+      <div className="relative aspect-[3/4] overflow-hidden border-b border-line">
         <Image
           src={person.image}
           alt={`Portrait of ${person.name}`}
           fill
-          sizes="(max-width: 640px) 100vw, 50vw"
-          className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+          sizes="(max-width: 640px) calc(100vw - 2.5rem), (max-width: 1024px) 50vw, 600px"
+          className="object-cover object-center"
         />
       </div>
       <div className="flex flex-1 flex-col p-6">
