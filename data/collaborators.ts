@@ -17,6 +17,13 @@ export interface Collaborator {
   links: CollaboratorLink[];
 }
 
+export interface TeamPhoto {
+  id: string;
+  image: string;
+  alt: string;
+  caption: string;
+}
+
 export const collaborators: Collaborator[] = [
   {
     id: "nairith",
@@ -48,5 +55,20 @@ export const collaborators: Collaborator[] = [
       },
       { label: "Email", href: "mailto:yonglyhor1004@gmail.com", icon: Mail },
     ],
+  },
+];
+
+export const teamPhotos: TeamPhoto[] = [
+  {
+    id: "together-1",
+    image: "/images/people/together1.webp",
+    alt: "RIN Nairith and YONG Lyhor working together at a shared screen",
+    caption: "Building together",
+  },
+  {
+    id: "together-2",
+    image: "/images/people/together2.webp",
+    alt: "RIN Nairith and YONG Lyhor collaborating on a project",
+    caption: "Working side by side",
   },
 ];

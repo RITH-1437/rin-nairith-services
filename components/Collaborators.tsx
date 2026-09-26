@@ -5,8 +5,10 @@ import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 import {
   collaborators,
+  teamPhotos,
   type Collaborator,
   type CollaboratorLink,
+  type TeamPhoto,
 } from "@/data/collaborators";
 
 function SocialIconLink({
@@ -33,35 +35,56 @@ function SocialIconLink({
 
 function TeamCard({ person }: { person: Collaborator }) {
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-panel transition-all duration-300 hover:-translate-y-1 hover:border-lime/40 hover:shadow-[0_0_24px_rgba(183,255,60,0.08)]">
-      <div className="relative aspect-[3/4] overflow-hidden border-b border-line">
-        <Image
-          src={person.image}
-          alt={`Portrait of ${person.name}`}
-          fill
-          sizes="(max-width: 640px) calc(100vw - 2.5rem), (max-width: 1024px) 50vw, 600px"
-          className="object-cover object-center"
-        />
-      </div>
-      <div className="flex flex-1 flex-col p-6">
-        <p className="font-mono text-xs uppercase tracking-[0.16em] text-lime">
-          {person.role}
-        </p>
-        <h3 className="mt-2 text-xl font-semibold text-fg">{person.name}</h3>
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-fgMuted">
-          {person.description}
-        </p>
-        <div className="mt-6 flex flex-wrap gap-2">
-          {person.links.map((link) => (
-            <SocialIconLink
-              key={`${person.id}-${link.label}`}
-              link={link}
-              name={person.name}
-            />
-          ))}
+    <article className="group flex h-full flex-col rounded-xl border border-line bg-panel p-5 transition-all duration-300 hover:-translate-y-1 hover:border-lime/40 hover:shadow-[0_0_24px_rgba(183,255,60,0.08)]">
+      <div className="flex items-start gap-4">
+        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-line">
+          <Image
+            src={person.image}
+            alt=""
+            fill
+            sizes="80px"
+            className="object-cover object-center"
+          />
+        </div>
+        <div className="min-w-0 pt-0.5">
+          <p className="font-mono text-[11px] uppercase leading-relaxed tracking-[0.16em] text-lime">
+            {person.role}
+          </p>
+          <h3 className="mt-1.5 text-lg font-semibold text-fg">{person.name}</h3>
         </div>
       </div>
+      <p className="mt-4 flex-1 text-sm leading-relaxed text-fgMuted">
+        {person.description}
+      </p>
+      <div className="mt-5 flex flex-wrap gap-2">
+        {person.links.map((link) => (
+          <SocialIconLink
+            key={`${person.id}-${link.label}`}
+            link={link}
+            name={person.name}
+          />
+        ))}
+      </div>
     </article>
+  );
+}
+
+function TeamPhotoCard({ photo }: { photo: TeamPhoto }) {
+  return (
+    <figure className="group overflow-hidden rounded-xl border border-line bg-panel">
+      <div className="relative aspect-[4/5] overflow-hidden">
+        <Image
+          src={photo.image}
+          alt={photo.alt}
+          fill
+          sizes="(max-width: 640px) 100vw, 336px"
+          className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+        />
+      </div>
+      <figcaption className="border-t border-line px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-fgFaint">
+        {photo.caption}
+      </figcaption>
+    </figure>
   );
 }
 
@@ -81,6 +104,20 @@ export default function Collaborators() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={0.12}>
+          <div className="mt-12">
+            <p className="text-center font-mono text-xs uppercase tracking-[0.16em] text-fgFaint">
+              Working together
+            </p>
+            <div className="mx-auto mt-5 grid max-w-2xl gap-5 sm:grid-cols-2">
+              {teamPhotos.map((photo) => (
+                <TeamPhotoCard key={photo.id} photo={photo} />
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
         <Reveal delay={0.16}>
           <a href="#contact" className="link-accent mx-auto mt-8 flex w-fit items-center gap-1 text-sm font-medium">
             Work with the team
