@@ -9,9 +9,10 @@ export const alt = `${siteConfig.name} — Digital Solutions for Modern Business
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-/** Brand artwork, inlined because satori cannot load remote/local files by path. */
+/** Brand artwork, inlined because satori cannot load remote/local files by path.
+ *  Sourced at 2x the rendered size so the data URI stays small. */
 function readLogoDataUri(): string {
-  const file = path.join(process.cwd(), "public", "images", "logo", "logo-dark.png");
+  const file = path.join(process.cwd(), "public", "images", "logo", "logo-og.png");
   return `data:image/png;base64,${readFileSync(file).toString("base64")}`;
 }
 

@@ -10,7 +10,7 @@ export default function Pricing() {
         <SectionHeading
           label="Pricing"
           title="Simple Starting Packages"
-          description="A practical starting point for common project types. We refine the scope and estimate after a short conversation."
+          description="A practical starting point for common project types. Every plan is a starting price — we refine the scope and estimate after a short conversation."
         />
         <div className="grid gap-5 md:grid-cols-3">
           {pricingPlans.map((plan, i) => (
@@ -21,7 +21,7 @@ export default function Pricing() {
         </div>
         <Reveal delay={0.2}>
           <p className="mt-8 text-center text-sm text-fgFaint">
-            Final pricing depends on project requirements, features, complexity, and timeline.
+            Starting prices. Final pricing depends on scope, features, integrations, and timeline.
           </p>
         </Reveal>
       </div>

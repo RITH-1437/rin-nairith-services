@@ -37,17 +37,41 @@ export const technologyGroups: TechGroup[] = [
   {
     id: "frontend",
     label: "Frontend",
-    items: ["HTML", "CSS", "JavaScript", "Vue.js", "Bootstrap", "Tailwind CSS"],
+    items: [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "Next.js",
+      "Vue.js",
+      "Tailwind CSS",
+      "Bootstrap",
+    ],
   },
   {
     id: "backend",
     label: "Backend",
-    items: ["PHP", "Laravel", "ZeroPing", "Java Spring Boot", "C# .NET"],
+    items: ["PHP", "Laravel", "ZeroPing", "Java Spring Boot", "C# .NET", "REST APIs"],
   },
   {
     id: "database",
     label: "Database",
     items: ["MySQL", "PostgreSQL", "Database Design", "ORM"],
+  },
+  {
+    id: "data-ai",
+    label: "Data & AI",
+    items: [
+      "Python",
+      "TensorFlow",
+      "Machine Learning",
+      "Computer Vision",
+      "RAG",
+      "LLM Applications",
+      "Power BI",
+      "SQL",
+    ],
   },
   {
     id: "devops",
@@ -57,7 +81,7 @@ export const technologyGroups: TechGroup[] = [
   {
     id: "tools",
     label: "Tools",
-    items: ["Git", "GitHub", "Composer", "Vercel", "Postman"],
+    items: ["Git", "GitHub", "Composer", "Vercel", "Postman", "Streamlit"],
   },
 ];
 

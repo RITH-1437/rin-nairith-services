@@ -39,7 +39,7 @@ export const faqs: Faq[] = [
     id: "technologies",
     question: "Which technologies do you work with?",
     answer:
-      "We work with technologies including HTML, CSS, JavaScript, Vue.js, PHP, Laravel, Java Spring Boot, C# .NET, MySQL, PostgreSQL, AWS, Docker, and GitHub Actions.",
+      "We work across the stack: HTML, CSS, JavaScript, TypeScript, React, Next.js, Vue.js, PHP, Laravel, Java Spring Boot, C# .NET, MySQL, PostgreSQL, Python, TensorFlow, Power BI, AWS, Docker, Nginx, Linux, and GitHub Actions.",
   },
   {
     id: "communication",

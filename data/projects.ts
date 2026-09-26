@@ -15,6 +15,41 @@ export interface Project {
   liveUrl?: string;
   status: ProjectStatus;
   role: string;
+  /**
+   * Short, factual availability note shown when a project has no reachable
+   * public link. Never implies the project is fake, unfinished, or abandoned.
+   */
+  note?: string;
+}
+
+export interface ProjectAvailability {
+  /** A working live demo the visitor can open right now. */
+  canViewLive: boolean;
+  /** A working public source repository the visitor can open right now. */
+  canViewSource: boolean;
+  /** Honest explanation when something is not publicly reachable. */
+  note?: string;
+}
+
+/**
+ * "Unavailable" only ever describes the reachability of a project's public
+ * link — never the existence or quality of the project itself.
+ */
+export function getProjectAvailability(project: Project): ProjectAvailability {
+  const liveDown = project.status === "Unavailable" && Boolean(project.liveUrl);
+  const canViewLive = Boolean(project.liveUrl) && !liveDown;
+  const canViewSource = Boolean(project.githubUrl);
+
+  let note = project.note;
+  if (!note) {
+    if (liveDown) {
+      note = "Live demo currently unavailable.";
+    } else if (!canViewLive && canViewSource) {
+      note = "No public demo for this project. Source code is available on GitHub.";
+    }
+  }
+
+  return { canViewLive, canViewSource, note };
 }
 
 export const projectCategories: ProjectCategory[] = [
@@ -99,7 +134,7 @@ export const projects: Project[] = [
     category: "Open Source",
     image: "/images/zeroping.png",
     githubUrl: "https://github.com/RITH-1437/ZeroPing",
-    status: "Unavailable",
+    status: "Open Source",
     role: "Founder / Maintainer",
   },
   {
@@ -120,7 +155,7 @@ export const projects: Project[] = [
     category: "Full Stack",
     image: "/images/prompthub.png",
     githubUrl: "https://github.com/RITH-1437/prompthub",
-    status: "Unavailable",
+    status: "Open Source",
     role: "Software Developer",
   },
   {
@@ -141,7 +176,7 @@ export const projects: Project[] = [
     category: "Full Stack",
     image: "/images/todo.png",
     githubUrl: "https://github.com/RITH-1437/todo_app",
-    status: "Unavailable",
+    status: "Open Source",
     role: "Software Developer",
   },
   {
@@ -180,7 +215,8 @@ export const projects: Project[] = [
     category: "Open Source",
     image: "/images/cpu.jpg",
     githubUrl: "https://github.com/RITH-1437/cpu-scheduling",
-    status: "Open Source",
+    liveUrl: "https://rith-1437.github.io/cpu-scheduling/",
+    status: "Live",
     role: "Developer",
   },
   {
@@ -215,7 +251,7 @@ export const projects: Project[] = [
     ],
     technologies: ["Python", "TensorFlow", "Streamlit", "NLP"],
     category: "Open Source",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
     githubUrl: "https://github.com/YongLyhor/Image-Caption-Generator",
     status: "Open Source",
     role: "YONG Lyhor · Data Scientist",
@@ -233,9 +269,10 @@ export const projects: Project[] = [
     ],
     technologies: ["Power BI", "Excel", "SQL", "Python"],
     category: "Backend",
-    image: "https://images.unsplash.com/photo-1557804506-669a67965ba0",
+    image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=80",
     status: "Unavailable",
     role: "YONG Lyhor · Data Analyst",
+    note: "Delivered as an internal Power BI dashboard, so there is no public demo to link to.",
   },
   {
     id: "sign-language-detection",
@@ -250,10 +287,10 @@ export const projects: Project[] = [
     ],
     technologies: ["Python", "YOLOv11", "Machine Learning", "Roboflow"],
     category: "Open Source",
-    image: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0",
-    githubUrl: "https://github.com/KheangDS/Sign-Language-Detection",
-    status: "Open Source",
+    image: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=1200&q=80",
+    status: "Unavailable",
     role: "YONG Lyhor · Machine Learning",
+    note: "The public repository for this project is not reachable at the moment. The model work and dataset pipeline are described above.",
   },
   {
     id: "ragkhmer-tutor-chatbot",
@@ -268,7 +305,7 @@ export const projects: Project[] = [
     ],
     technologies: ["Streamlit", "Python", "RAG", "OpenAI API"],
     category: "Open Source",
-    image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44",
+    image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80",
     githubUrl: "https://github.com/YongLyhor/RagKhmer-Tutor-Chatbot",
     status: "Open Source",
     role: "YONG Lyhor · Data Scientist",

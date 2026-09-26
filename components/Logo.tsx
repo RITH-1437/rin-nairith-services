@@ -15,6 +15,7 @@ export default function Logo({ className }: LogoProps) {
           width={640}
           height={378}
           priority
+          sizes="64px"
           className="h-9 w-auto [html[data-theme='light']_&]:hidden"
         />
         <Image
@@ -22,7 +23,7 @@ export default function Logo({ className }: LogoProps) {
           alt=""
           width={640}
           height={435}
-          priority
+          sizes="64px"
           className="hidden h-9 w-auto [html[data-theme='light']_&]:block"
         />
       </span>

@@ -26,7 +26,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative flex min-h-[calc(100vh-4rem)] items-center overflow-hidden py-24"
+      className="relative flex min-h-[calc(100dvh-4rem)] items-center overflow-hidden py-24"
     >
       <div className="absolute inset-0">
         <NetworkBackground />
@@ -117,6 +117,7 @@ export default function Hero() {
                   height={378}
                   className="h-full w-full object-contain [html[data-theme='light']_&]:hidden"
                   priority
+                  sizes="96px"
                 />
                 <Image
                   src="/images/logo/logo-light.png"
@@ -124,7 +125,7 @@ export default function Hero() {
                   width={640}
                   height={435}
                   className="hidden h-full w-full object-contain [html[data-theme='light']_&]:block"
-                  priority
+                  sizes="96px"
                 />
               </span>
               <div>

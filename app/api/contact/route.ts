@@ -16,6 +16,51 @@ interface ContactPayload {
   description?: string;
 }
 
+/** Upper bounds per field, applied before anything is sent to a provider. */
+const fieldLimits: Record<keyof ContactPayload, number> = {
+  name: 100,
+  company: 150,
+  email: 200,
+  phone: 100,
+  projectType: 60,
+  budget: 40,
+  description: 5000,
+};
+
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 5;
+const RATE_LIMIT_MAX_TRACKED_KEYS = 5000;
+const rateLimitHits = new Map<string, number[]>();
+
+function getClientKey(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+  return (
+    request.headers.get("x-real-ip")?.trim() ??
+    request.headers.get("x-vercel-forwarded-for")?.trim() ??
+    "unknown"
+  );
+}
+
+/** Best-effort abuse guard. In-memory per instance, so it is a comfort
+ *  measure rather than a hard guarantee. */
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const recent = (rateLimitHits.get(key) ?? []).filter(
+    (time) => now - time < RATE_LIMIT_WINDOW_MS
+  );
+
+  if (recent.length >= RATE_LIMIT_MAX_REQUESTS) {
+    rateLimitHits.set(key, recent);
+    return true;
+  }
+
+  if (rateLimitHits.size > RATE_LIMIT_MAX_TRACKED_KEYS) rateLimitHits.clear();
+  recent.push(now);
+  rateLimitHits.set(key, recent);
+  return false;
+}
+
 function buildTelegramHtml(payload: ContactPayload): string {
   const rows: Array<[string, string]> = [
     ["Name", payload.name ?? "-"],
@@ -126,15 +171,24 @@ export async function POST(request: Request) {
     );
   }
 
-  const submission: ContactPayload = {
-    name: (payload.name ?? "").trim(),
-    company: (payload.company ?? "").trim(),
-    email: (payload.email ?? "").trim(),
-    phone: (payload.phone ?? "").trim(),
-    projectType: (payload.projectType ?? "").trim(),
-    budget: (payload.budget ?? "").trim(),
-    description: (payload.description ?? "").trim(),
-  };
+  const submission: ContactPayload = {};
+  for (const key of Object.keys(fieldLimits) as Array<keyof ContactPayload>) {
+    const value = payload[key];
+    submission[key] = typeof value === "string" ? value.trim() : "";
+  }
+
+  for (const key of Object.keys(fieldLimits) as Array<keyof ContactPayload>) {
+    const value = submission[key] ?? "";
+    if (value.length > fieldLimits[key]) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `Please shorten the "${key}" field and try again.`,
+        },
+        { status: 400 }
+      );
+    }
+  }
 
   if (!submission.name || !submission.description) {
     return NextResponse.json(
@@ -146,6 +200,19 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { ok: false, error: "A valid email is required." },
       { status: 400 }
+    );
+  }
+
+  // Counted only once a submission is well formed, so a couple of typos never
+  // lock a visitor out of sending their actual message.
+  if (isRateLimited(getClientKey(request))) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          "Too many messages were sent from this connection. Please wait a few minutes, or email us directly.",
+      },
+      { status: 429 }
     );
   }
 
@@ -184,8 +251,8 @@ export async function POST(request: Request) {
   return NextResponse.json(
     {
       ok: false,
-      error: "Could not deliver the message.",
-      hint: "Configure the contact delivery environment variables.",
+      error:
+        "We could not send your message right now. Please try again, or email us directly.",
     },
     { status: 502 }
   );

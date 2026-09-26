@@ -51,7 +51,7 @@ export default function NetworkBackground() {
     let nodes: Node[] = [];
     let pulses: Pulse[] = [];
     let lastPulse = 0;
-    let needsRepaint = false;
+    let paused = false;
 
     const cssVar = (name: string): string => {
       const value = getComputedStyle(document.documentElement)
@@ -82,16 +82,15 @@ export default function NetworkBackground() {
       return [183, 255, 60];
     };
 
-    const refreshPalette = () => {
-      const accent = parseColor(cssVar("--accent"));
-      const [r, g, b] = accent;
-      paletteRef.current = {
-        line: `rgba(${r},${g},${b},`,
-        node: `rgba(${r},${g},${b},`,
-        pulse: `rgba(${r},${g},${b},`,
+      const refreshPalette = () => {
+        const accent = parseColor(cssVar("--accent"));
+        const [r, g, b] = accent;
+        paletteRef.current = {
+          line: `rgba(${r},${g},${b},`,
+          node: `rgba(${r},${g},${b},`,
+          pulse: `rgba(${r},${g},${b},`,
+        };
       };
-      needsRepaint = true;
-    };
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
@@ -121,6 +120,7 @@ export default function NetworkBackground() {
     };
 
     const connectDistance = 150;
+    const ALPHA_BUCKETS = 5;
 
     const step = (time: number) => {
       if (!reducedMotion.current) {
@@ -157,33 +157,54 @@ export default function NetworkBackground() {
 
       const pal = paletteRef.current;
 
-      // connection lines
+      // Connection lines, batched into a few alpha buckets so the whole
+      // network costs a handful of stroke calls instead of one per pair.
       ctx.lineWidth = 0.5;
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < connectDistance) {
-            const alpha = (1 - dist / connectDistance) * 0.14;
-            ctx.strokeStyle = pal.line + alpha.toFixed(3) + ")";
-            ctx.beginPath();
+      for (let bucket = 0; bucket < ALPHA_BUCKETS; bucket++) {
+        const alpha = (1 - (bucket + 0.5) / ALPHA_BUCKETS) * 0.14;
+        ctx.strokeStyle = pal.line + alpha.toFixed(3) + ")";
+        ctx.beginPath();
+        let drew = false;
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
+            const distSq = dx * dx + dy * dy;
+            if (distSq >= connectDistance * connectDistance) continue;
+            const level = Math.min(
+              ALPHA_BUCKETS - 1,
+              Math.floor(((1 - Math.sqrt(distSq) / connectDistance) * ALPHA_BUCKETS))
+            );
+            if (level !== bucket) continue;
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.stroke();
+            drew = true;
           }
         }
+        if (drew) ctx.stroke();
       }
 
-      // node dots
-      for (const n of nodes) {
-        const breath = reducedMotion.current
-          ? 0
-          : 0.3 * Math.sin(n.pulse + time / 1800);
-        ctx.fillStyle = pal.node + (0.28 + breath * 0.2).toFixed(3) + ")";
+      // Node dots, batched into a few alpha buckets so the "breathing" effect
+      // survives without one fill call per node.
+      for (let bucket = 0; bucket < ALPHA_BUCKETS; bucket++) {
+        const alpha = 0.22 + ((bucket + 0.5) / ALPHA_BUCKETS) * 0.12;
+        ctx.fillStyle = pal.node + alpha.toFixed(3) + ")";
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fill();
+        let drew = false;
+        for (const n of nodes) {
+          const breath = reducedMotion.current
+            ? 0
+            : 0.3 * Math.sin(n.pulse + time / 1800);
+          const level = Math.min(
+            ALPHA_BUCKETS - 1,
+            Math.max(0, Math.floor(((breath + 0.3) / 0.6) * ALPHA_BUCKETS))
+          );
+          if (level !== bucket) continue;
+          ctx.moveTo(n.x + n.r, n.y);
+          ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+          drew = true;
+        }
+        if (drew) ctx.fill();
       }
 
       // pulse animations
@@ -205,36 +226,73 @@ export default function NetworkBackground() {
     };
 
     const loop = (time: number) => {
-      if (needsRepaint) {
-        needsRepaint = false;
-      }
-      draw(time);
       raf = requestAnimationFrame(loop);
+      if (paused) return;
+      draw(time);
+    };
+
+    const start = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(loop);
+    };
+
+    const stop = () => {
+      if (!raf) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
     };
 
     refreshPalette();
     resize();
-    raf = requestAnimationFrame(loop);
+
+    // Reduced motion: paint one static frame, then stop the loop entirely.
+    if (reducedMotion.current) {
+      draw(0);
+      stop();
+    } else {
+      start();
+    }
+
+    // Only animate while the canvas is actually on screen.
+    const visibility = new IntersectionObserver(
+      ([entry]) => {
+        paused = !entry.isIntersecting;
+        if (paused) stop();
+        else start();
+      },
+      { threshold: 0 }
+    );
+    visibility.observe(canvas);
 
     const onThemeChange = () => {
       refreshPalette();
+      if (paused) return;
+      draw(performance.now());
     };
     window.addEventListener("themechange", onThemeChange);
 
     const onVisibility = () => {
-      if (document.hidden) {
-        cancelAnimationFrame(raf);
+      if (document.hidden || paused) {
+        stop();
       } else {
-        raf = requestAnimationFrame(loop);
+        start();
       }
     };
 
-    window.addEventListener("resize", resize);
+    let resizeTimer = 0;
+    const onResize = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(resize, 150);
+    };
+
+    window.addEventListener("resize", onResize);
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
+      stop();
+      window.clearTimeout(resizeTimer);
+      visibility.disconnect();
+      window.removeEventListener("resize", onResize);
       window.removeEventListener("themechange", onThemeChange);
       document.removeEventListener("visibilitychange", onVisibility);
     };

@@ -45,12 +45,33 @@
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
+    /* clip (not hidden) contains stray horizontal overflow without turning
+       the root into a scroll container, which would break the sticky header. */
+    overflow-x: clip;
   }
 
   body {
     @apply bg-bg text-fg font-sans antialiased;
-    overflow-x: hidden;
+  }
+
+  /* The native cursor is only hidden once the custom cursor exists, so a
+     script failure degrades to the normal system pointer. */
+  .has-custom-cursor body,
+  .has-custom-cursor a,
+  .has-custom-cursor button,
+  .has-custom-cursor [role="button"],
+  .has-custom-cursor summary,
+  .has-custom-cursor select,
+  .has-custom-cursor label,
+  .has-custom-cursor [data-cursor] {
     cursor: none;
+  }
+
+  /* Never take the text caret away from fields the visitor can type in. */
+  .has-custom-cursor input:not([type="checkbox"]):not([type="radio"]),
+  .has-custom-cursor textarea,
+  .has-custom-cursor [contenteditable="true"] {
+    cursor: text;
   }
 
   ::selection {
@@ -62,7 +83,6 @@
   *:focus-visible {
     outline: 2px solid rgb(var(--accent));
     outline-offset: 2px;
-    border-radius: 2px;
   }
 }
 
@@ -190,15 +210,13 @@
     0 0 70px 14px rgb(var(--accent) / 0.1);
 }
 
-/* Hide native cursor on interactive elements too */
-a,
-button,
-[role="button"],
-input,
-textarea,
-select,
-label {
-  cursor: none;
+/* Fade the custom cursor out where it would fight the native affordance:
+   over text entry, and whenever the pointer is not over the window. */
+.cursor-over-text .cursor-dot,
+.cursor-over-text .cursor-glow,
+.cursor-away .cursor-dot,
+.cursor-away .cursor-glow {
+  opacity: 0;
 }
 
 @media (pointer: coarse) {

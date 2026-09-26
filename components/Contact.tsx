@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Send, Loader2 } from "lucide-react";
+import { CheckCircle2, Send, Loader2, Lock } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import SocialLinks from "./SocialLinks";
 
@@ -27,6 +27,31 @@ const budgets = [
   "$1,000+",
   "Not sure yet",
 ];
+
+/** Mirrors the server-side caps in /api/contact. */
+const fieldLimits = {
+  name: 100,
+  company: 150,
+  email: 200,
+  phone: 100,
+  description: 5000,
+} as const;
+
+const fieldOrder = [
+  "name",
+  "email",
+  "phone",
+  "projectType",
+  "description",
+] as const;
+
+const fieldIds: Record<(typeof fieldOrder)[number], string> = {
+  name: "contact-name",
+  email: "contact-email",
+  phone: "contact-phone",
+  projectType: "contact-type",
+  description: "contact-desc",
+};
 
 interface FormData {
   name: string;
@@ -54,6 +79,8 @@ export default function Contact() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
+  const submittingRef = useRef(false);
+  const successRef = useRef<HTMLDivElement>(null);
 
   const setField = (field: keyof FormData, value: string) => {
     setForm((previous) => ({ ...previous, [field]: value }));
@@ -71,13 +98,23 @@ export default function Contact() {
     if (!form.description.trim())
       next.description = "Please briefly describe your project.";
     setErrors(next);
+
+    const firstInvalid = fieldOrder.find((field) => next[field]);
+    if (firstInvalid) {
+      document.getElementById(fieldIds[firstInvalid])?.focus();
+    }
+
     return Object.keys(next).length === 0;
   };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    // Guard against a second submit landing before React re-renders the
+    // disabled button state.
+    if (submittingRef.current) return;
     if (!validate()) return;
 
+    submittingRef.current = true;
     setStatus("submitting");
     setError(null);
 
@@ -96,6 +133,7 @@ export default function Contact() {
       setStatus("success");
       setWarning(data.warning ?? null);
       setForm(emptyForm);
+      requestAnimationFrame(() => successRef.current?.focus());
     } catch (submissionError) {
       setStatus("error");
       setWarning(null);
@@ -104,6 +142,8 @@ export default function Contact() {
           ? submissionError.message
           : "Could not send your message. Please try again or contact us directly."
       );
+    } finally {
+      submittingRef.current = false;
     }
   };
 
@@ -135,6 +175,8 @@ export default function Contact() {
             {status === "success" ? (
               <motion.div
                 key="success"
+                ref={successRef}
+                tabIndex={-1}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex h-full min-h-[24rem] flex-col items-center justify-center rounded-xl border border-lime/30 bg-panel p-8 text-center"
@@ -170,6 +212,7 @@ export default function Contact() {
                 exit={{ opacity: 0 }}
                 onSubmit={handleSubmit}
                 noValidate
+                aria-busy={status === "submitting"}
                 className="space-y-5 rounded-xl border border-line bg-panel p-6 sm:p-7"
               >
                 <div className="grid gap-5 sm:grid-cols-2">
@@ -182,6 +225,7 @@ export default function Contact() {
                       type="text"
                       autoComplete="name"
                       value={form.name}
+                      maxLength={fieldLimits.name}
                       onChange={(event) => setField("name", event.target.value)}
                       className={fieldClass(!!errors.name)}
                       placeholder="Your name"
@@ -203,6 +247,7 @@ export default function Contact() {
                       type="email"
                       autoComplete="email"
                       value={form.email}
+                      maxLength={fieldLimits.email}
                       onChange={(event) => setField("email", event.target.value)}
                       className={fieldClass(!!errors.email)}
                       placeholder="you@example.com"
@@ -227,6 +272,7 @@ export default function Contact() {
                       type="text"
                       autoComplete="organization"
                       value={form.company}
+                      maxLength={fieldLimits.company}
                       onChange={(event) => setField("company", event.target.value)}
                       className={fieldClass(false)}
                       placeholder="Your company"
@@ -241,6 +287,7 @@ export default function Contact() {
                       type="text"
                       autoComplete="tel"
                       value={form.phone}
+                      maxLength={fieldLimits.phone}
                       onChange={(event) => setField("phone", event.target.value)}
                       className={fieldClass(!!errors.phone)}
                       placeholder="@username or phone number"
@@ -313,6 +360,7 @@ export default function Contact() {
                     id="contact-desc"
                     rows={4}
                     value={form.description}
+                    maxLength={fieldLimits.description}
                     onChange={(event) => setField("description", event.target.value)}
                     className={fieldClass(!!errors.description)}
                     placeholder="Briefly describe what you would like to build..."
@@ -335,23 +383,33 @@ export default function Contact() {
                   </div>
                 ) : null}
 
-                <button
-                  type="submit"
-                  disabled={status === "submitting"}
-                  className="btn-primary w-full disabled:opacity-70"
-                >
-                  {status === "submitting" ? (
-                    <>
-                      <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send aria-hidden="true" className="h-4 w-4" />
-                      Send Message
-                    </>
-                  )}
-                </button>
+                <div className="space-y-3">
+                  <button
+                    type="submit"
+                    disabled={status === "submitting"}
+                    className="btn-primary w-full disabled:opacity-70"
+                  >
+                    {status === "submitting" ? (
+                      <>
+                        <Loader2
+                          aria-hidden="true"
+                          className="h-4 w-4 animate-spin"
+                        />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send aria-hidden="true" className="h-4 w-4" />
+                        Send Message
+                      </>
+                    )}
+                  </button>
+                  <p className="flex items-start justify-center gap-1.5 text-center text-xs leading-relaxed text-fgMuted">
+                    <Lock aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                    Your information is used only to respond to your project
+                    inquiry.
+                  </p>
+                </div>
               </motion.form>
             )}
           </AnimatePresence>

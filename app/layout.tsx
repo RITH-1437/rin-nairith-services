@@ -81,9 +81,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: "/images/logo/icon-192.png", type: "image/png", sizes: "192x192" },
       { url: "/images/logo/icon.png", type: "image/png", sizes: "512x512" },
     ],
-    apple: "/images/logo/icon.png",
+    apple: "/images/logo/icon-192.png",
   },
 };
 
@@ -99,48 +100,64 @@ export const viewport: Viewport = {
 const cursorScript = `
 (function () {
   var html = document.documentElement;
+
+  // Touch and coarse pointers keep the native cursor entirely.
+  if (!window.matchMedia('(pointer: fine)').matches) return;
+
   var dot, glow;
 
-  function init() {
+  function isInteractive(el) {
+    return !!el && !!el.closest(
+      'a, button, [role="button"], summary, select, label, [data-cursor]'
+    );
+  }
+
+  function isTextEntry(el) {
+    return !!el && !!el.closest('input:not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable="true"]');
+  }
+
+  function onMove(e) {
+    var target = e.target;
+    html.style.setProperty('--mx', e.clientX + 'px');
+    html.style.setProperty('--my', e.clientY + 'px');
+
+    var pointer = isInteractive(target);
+    dot.classList.toggle('is-pointer', pointer);
+    glow.classList.toggle('is-pointer', pointer);
+    html.classList.toggle('cursor-over-text', !pointer && isTextEntry(target));
+  }
+
+  function start() {
     dot = document.createElement('div');
     glow = document.createElement('div');
     dot.className = 'cursor-dot';
     glow.className = 'cursor-glow';
     document.body.appendChild(dot);
     document.body.appendChild(glow);
-  }
 
-  function isInteractive(el) {
-    return !!el && !!el.closest(
-      'a, button, [role="button"], input, textarea, select, label, [data-cursor]'
-    );
-  }
+    // The native cursor is only hidden once the replacement exists, so a
+    // script failure can never leave the visitor without a pointer.
+    html.classList.add('has-custom-cursor');
 
-  function onMove(e) {
-    var x = e.clientX, y = e.clientY;
-    html.style.setProperty('--mx', x + 'px');
-    html.style.setProperty('--my', y + 'px');
-    var under = document.elementFromPoint(x, y);
-    if (isInteractive(under)) {
-      dot.classList.add('is-pointer');
-      glow.classList.add('is-pointer');
-    } else {
-      dot.classList.remove('is-pointer');
-      glow.classList.remove('is-pointer');
-    }
-  }
-
-  function start() {
-    init();
     document.addEventListener('mousemove', onMove, { passive: true });
+    document.addEventListener('mouseleave', function () {
+      html.classList.add('cursor-away');
+    });
+    document.addEventListener('mouseenter', function () {
+      html.classList.remove('cursor-away');
+    });
+    window.addEventListener('blur', function () {
+      html.classList.add('cursor-away');
+    });
+    window.addEventListener('focus', function () {
+      html.classList.remove('cursor-away');
+    });
   }
 
-  if (window.matchMedia('(pointer: fine)').matches) {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', start, { once: true });
-    } else {
-      start();
-    }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start, { once: true });
+  } else {
+    start();
   }
 })();
 `;
@@ -151,12 +168,36 @@ const organizationJsonLd = {
   "@type": "Organization",
   "@id": organizationId,
   name: siteConfig.name,
+  alternateName: "2 Brothers Services",
   url: siteConfig.url,
   description: siteConfig.description,
   email: siteConfig.email,
   telephone: siteConfig.phone,
-  logo: `${siteConfig.url}/images/people/favicon.png`,
+  logo: {
+    "@type": "ImageObject",
+    url: `${siteConfig.url}/images/logo/icon.png`,
+    width: 512,
+    height: 512,
+  },
   image: `${siteConfig.url}/opengraph-image`,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Phnom Penh",
+    addressCountry: "KH",
+  },
+  sameAs: [
+    siteConfig.social.telegram,
+    siteConfig.social.facebook,
+    siteConfig.social.linkedin,
+    siteConfig.social.github,
+  ],
+  knowsAbout: [
+    "Web development",
+    "Business management systems",
+    "Backend and API development",
+    "AI applications",
+    "Cloud deployment",
+  ],
 };
 
 const websiteJsonLd = {
@@ -194,6 +235,12 @@ export default function RootLayout({
       </head>
       <body className="font-sans">
         <DocumentScripts structuredData={structuredData} />
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-lime focus:px-4 focus:py-2.5 focus:text-sm focus:font-medium focus:text-bg"
+        >
+          Skip to content
+        </a>
         <ThemeProvider>
           <Navbar />
           <main id="main">{children}</main>

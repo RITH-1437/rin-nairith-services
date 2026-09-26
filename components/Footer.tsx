@@ -32,13 +32,13 @@ export default function Footer() {
             </h2>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-fgMuted">
               Tell us about the project, the timeline, and the outcome you need.
-              We reply within one business day.
+              We aim to reply as soon as we can.
             </p>
           </div>
         </Reveal>
 
         <div aria-hidden="true" className="select-none overflow-hidden">
-          <p className="translate-y-[0.16em] whitespace-nowrap bg-gradient-to-b from-lime/80 via-lime/35 to-lime/5 bg-clip-text text-center font-mono text-[15vw] font-bold leading-[0.85] tracking-tighter text-transparent [-webkit-text-stroke:1px_rgb(var(--accent)/0.35)] [paint-order:stroke_fill]">
+          <p className="translate-y-[0.16em] whitespace-nowrap bg-gradient-to-b from-lime/80 via-lime/35 to-lime/5 bg-clip-text text-center font-mono text-[min(8.6vw,6.6rem)] font-bold leading-[0.85] tracking-tighter text-transparent [-webkit-text-stroke:1px_rgb(var(--accent)/0.35)] [paint-order:stroke_fill]">
             2Brothers Services
           </p>
         </div>

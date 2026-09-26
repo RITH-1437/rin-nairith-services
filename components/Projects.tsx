@@ -24,27 +24,34 @@ export default function Projects() {
         />
 
         <div
-          role="tablist"
+          role="group"
           aria-label="Filter projects by category"
           className="mb-8 flex flex-wrap gap-2"
         >
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              type="button"
-              role="tab"
-              aria-selected={active === filter}
-              onClick={() => setActive(filter)}
-              className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
-                active === filter
-                  ? "border-lime bg-lime/15 text-lime"
-                  : "border-line text-fgMuted hover:border-lime/40 hover:text-fg"
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
+          {filters.map((filter) => {
+            const isActive = active === filter;
+            return (
+              <button
+                key={filter}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => setActive(filter)}
+                className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
+                  isActive
+                    ? "border-lime bg-lime/15 text-lime"
+                    : "border-line text-fgMuted hover:border-lime/40 hover:text-fg"
+                }`}
+              >
+                {filter}
+              </button>
+            );
+          })}
         </div>
+
+        <p aria-live="polite" className="sr-only">
+          Showing {visible.length} {visible.length === 1 ? "project" : "projects"}
+          {active === "All" ? "" : ` in ${active}`}.
+        </p>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {visible.map((project, i) => (

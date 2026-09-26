@@ -72,7 +72,7 @@ export default function Collaborators() {
         <SectionHeading
           label="Team"
           title="Meet 2Brothers"
-          description="Two complementary perspectives on the people, systems, and infrastructure behind a useful digital product."
+          description="2Brothers Services is a small, two-person development team. You work directly with the people building and deploying your project."
         />
         <div className="grid gap-5 sm:grid-cols-2">
           {collaborators.map((person, i) => (
