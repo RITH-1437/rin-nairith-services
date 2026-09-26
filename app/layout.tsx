@@ -80,8 +80,10 @@ export const metadata: Metadata = {
     canonical: siteConfig.url,
   },
   icons: {
-    icon: "/images/people/favicon.png",
-    apple: "/images/people/favicon.png",
+    icon: [
+      { url: "/images/logo/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: "/images/logo/icon.png",
   },
 };
 

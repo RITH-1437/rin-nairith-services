@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/data/site";
 
@@ -6,6 +8,12 @@ export const runtime = "nodejs";
 export const alt = `${siteConfig.name} — Digital Solutions for Modern Businesses`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+/** Brand artwork, inlined because satori cannot load remote/local files by path. */
+function readLogoDataUri(): string {
+  const file = path.join(process.cwd(), "public", "images", "logo", "logo-dark.png");
+  return `data:image/png;base64,${readFileSync(file).toString("base64")}`;
+}
 
 export default async function OgImage() {
   return new ImageResponse(
@@ -31,23 +39,12 @@ export default async function OgImage() {
             marginBottom: 28,
           }}
         >
-          <span
-            style={{
-              fontFamily: "monospace",
-              fontSize: 40,
-              fontWeight: 700,
-              color: "#b7ff3c",
-            }}
-          >
-            {"</>"}
-          </span>
-          <span
-            style={{
-              height: 2,
-              width: 48,
-              background: "#b7ff3c",
-              opacity: 0.5,
-            }}
+          {/* eslint-disable-next-line @next/next/no-img-element -- satori requires a raw img with an inlined data URI */}
+          <img
+            src={readLogoDataUri()}
+            width={132}
+            height={78}
+            alt=""
           />
         </div>
         <div

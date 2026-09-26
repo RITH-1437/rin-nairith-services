@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, FolderOpen } from "lucide-react";
 import NetworkBackground from "./NetworkBackground";
@@ -107,9 +108,24 @@ export default function Hero() {
             custom={2}
             className="rounded-2xl border border-lineStrong bg-panel/90 p-6 shadow-[0_0_50px_rgba(183,255,60,0.08)] backdrop-blur sm:p-8"
           >
-            <div className="flex items-center gap-3 border-b border-line pb-6">
-              <span className="font-mono text-2xl font-semibold text-lime">
-                {siteConfig.logo}
+            <div className="flex items-center gap-4 border-b border-line pb-6">
+              <span className="flex h-12 w-24 shrink-0 items-center">
+                <Image
+                  src="/images/logo/logo-dark.png"
+                  alt=""
+                  width={640}
+                  height={378}
+                  className="h-full w-full object-contain [html[data-theme='light']_&]:hidden"
+                  priority
+                />
+                <Image
+                  src="/images/logo/logo-light.png"
+                  alt=""
+                  width={640}
+                  height={435}
+                  className="hidden h-full w-full object-contain [html[data-theme='light']_&]:block"
+                  priority
+                />
               </span>
               <div>
                 <p className="font-semibold text-fg">2Brothers Services</p>
