@@ -27,7 +27,15 @@ jobs:
             echo "::error::TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID must be configured as secrets in the telegram GitHub environment."
             exit 1
           fi
-          text=$(printf 'Push to %s\nBranch: %s\nCommit: %s\nAuthor: %s\n\n%s' "$REPOSITORY" "$BRANCH" "$COMMIT" "$ACTOR" "$COMMIT_MESSAGE")
+          short_sha="${COMMIT:0:7}"
+          commit_url="https://github.com/${REPOSITORY}/commit/${COMMIT}"
+          raw_message="${COMMIT_MESSAGE:0:900}"
+          if [[ -z "${raw_message//[[:space:]]/}" ]]; then
+            raw_message="Manual workflow run"
+          fi
+          escaped_message=$(printf '%s' "$raw_message" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g')
+          text=$(printf '<b>EduCore - Push Notification</b>\n\nRepository: %s\nBranch: %s\nAuthor: %s\nCommit: <a href="%s">%s</a>\n\n%s' \
+            "$REPOSITORY" "$BRANCH" "$ACTOR" "$commit_url" "$short_sha" "$escaped_message")
           curl --fail-with-body --silent --show-error \
             --connect-timeout 10 \
             --max-time 30 \
@@ -35,4 +43,5 @@ jobs:
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
             --data-urlencode "text=${text}" \
+            --data-urlencode "parse_mode=HTML" \
             --data-urlencode "disable_web_page_preview=true"
