@@ -5,7 +5,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingCta from "@/components/FloatingCta";
-import { DocumentScripts, ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/theme-provider";
+import { THEME_STORAGE_KEY } from "@/lib/theme-storage";
 import { siteConfig } from "@/data/site";
 
 const inter = Inter({
@@ -27,16 +28,6 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  keywords: [
-    "2Brothers Services",
-    "digital solutions Cambodia",
-    "business website development",
-    "custom web application development",
-    "business management systems",
-    "backend and API development",
-    "AI application development",
-    "cloud deployment",
-  ],
   authors: [{ name: siteConfig.name }],
   creator: siteConfig.name,
   publisher: siteConfig.name,
@@ -162,13 +153,26 @@ const cursorScript = `
 })();
 `;
 
+const themeScript = `
+(function () {
+  try {
+    var stored = localStorage.getItem('${THEME_STORAGE_KEY}');
+    var theme = stored === 'dark' || stored === 'light'
+      ? stored
+      : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch {
+    return;
+  }
+})();
+`;
+
 const organizationId = `${siteConfig.url}/#organization`;
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "@id": organizationId,
   name: siteConfig.name,
-  alternateName: "2 Brothers Services",
   url: siteConfig.url,
   description: siteConfig.description,
   email: siteConfig.email,
@@ -232,9 +236,13 @@ export default function RootLayout({
         <Script id="cursor-script" strategy="afterInteractive">
           {cursorScript}
         </Script>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: structuredData }}
+        />
       </head>
       <body className="font-sans">
-        <DocumentScripts structuredData={structuredData} />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-lime focus:px-4 focus:py-2.5 focus:text-sm focus:font-medium focus:text-bg"

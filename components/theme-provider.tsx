@@ -1,11 +1,11 @@
 "use client";
 
-import { useServerInsertedHTML } from "next/navigation";
 import {
   createContext,
   useContext,
   useSyncExternalStore,
 } from "react";
+import { THEME_STORAGE_KEY } from "@/lib/theme-storage";
 
 type Theme = "dark" | "light";
 
@@ -17,40 +17,10 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
-const STORAGE_KEY = "2brothers-theme";
-
-const themeScript = `
-(function () {
-  try {
-    var stored = localStorage.getItem('${STORAGE_KEY}');
-    var theme = stored === 'dark' || stored === 'light'
-      ? stored
-      : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    document.documentElement.setAttribute('data-theme', theme);
-  } catch {
-    return;
-  }
-})();
-`;
-
-export function DocumentScripts({ structuredData }: { structuredData: string }) {
-  useServerInsertedHTML(() => (
-    <>
-      <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: structuredData }}
-      />
-    </>
-  ));
-
-  return null;
-}
-
 function getThemeSnapshot(): Theme {
   if (typeof window === "undefined") return "dark";
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
     if (stored === "dark" || stored === "light") return stored;
     return window.matchMedia("(prefers-color-scheme: light)").matches
       ? "light"
@@ -83,7 +53,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (next: Theme) => {
     document.documentElement.setAttribute("data-theme", next);
-    window.localStorage.setItem(STORAGE_KEY, next);
+    window.localStorage.setItem(THEME_STORAGE_KEY, next);
     window.dispatchEvent(new Event("themechange"));
   };
   const toggleTheme = () =>

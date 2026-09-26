@@ -6,9 +6,9 @@ export const siteConfig = {
   role: "Digital Solutions Company",
   location: "Phnom Penh, Cambodia",
   tagline: "Websites • Business Systems • APIs • Cloud",
-  title: "2Brothers Services | Digital Solutions for Modern Businesses",
+  title: "2Brothers Services | Web & Software Development in Cambodia",
   description:
-    "2Brothers Services builds tailored websites, business management systems, AI applications, and custom software solutions for modern businesses.",
+    "2Brothers Services is a web and software development company in Phnom Penh building business websites, custom web apps, APIs, AI tools, and cloud systems.",
   url: siteUrl.replace(/\/$/, ""),
   email: "nairithrin143@gmail.com",
   phone: "+855 96 62 73 314",

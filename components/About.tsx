@@ -4,7 +4,7 @@ import Reveal from "./Reveal";
 import { siteConfig } from "@/data/site";
 
 const focus = [
-  "Websites and digital experiences",
+  "Web development and digital experiences",
   "Business management systems",
   "APIs, integrations, and data tools",
   "Cloud deployment and maintenance",
@@ -20,10 +20,10 @@ export default function About() {
             title="A two-person team for practical digital work"
           />
           <p className="-mt-6 text-base leading-relaxed text-fgMuted">
-            2Brothers Services is a digital solutions company focused on clear,
-            useful software. We work with founders, teams, and organizations
-            that need a better website, a more organized operation, or a
-            custom application to support their work.
+            2Brothers Services is a software development company based in Phnom
+            Penh. Our web development and custom software work helps founders,
+            teams, and organizations that need a better website, a more
+            organized operation, or a custom application to support their work.
           </p>
           <p className="mt-4 text-base leading-relaxed text-fgMuted">
             Our approach combines product thinking, hands-on development, and

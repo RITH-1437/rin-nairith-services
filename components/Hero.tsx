@@ -57,8 +57,8 @@ export default function Hero() {
               custom={1}
               className="text-4xl font-bold leading-[1.08] tracking-tight text-fg sm:text-5xl lg:text-6xl"
             >
-              Digital Solutions Built for Modern{" "}
-              <span className="text-lime">Businesses.</span>
+              2Brothers Services — Web and{" "}
+              <span className="text-lime">Software Development</span>
             </motion.h1>
 
             <motion.p

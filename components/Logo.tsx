@@ -11,7 +11,7 @@ export default function Logo({ className }: LogoProps) {
       <span className="inline-flex h-9 items-center">
         <Image
           src="/images/logo/logo-dark.png"
-          alt=""
+          alt={siteConfig.name}
           width={640}
           height={378}
           priority
@@ -27,7 +27,6 @@ export default function Logo({ className }: LogoProps) {
           className="hidden h-9 w-auto [html[data-theme='light']_&]:block"
         />
       </span>
-      <span className="sr-only">{siteConfig.name}</span>
     </span>
   );
 }
