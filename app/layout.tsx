@@ -170,7 +170,7 @@ const themeScript = `
 const organizationId = `${siteConfig.url}/#organization`;
 const organizationJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "ProfessionalService",
   "@id": organizationId,
   name: siteConfig.name,
   url: siteConfig.url,
