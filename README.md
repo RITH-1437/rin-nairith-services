@@ -1,6 +1,8 @@
 # 2Brothers Services
 
-Official website for 2Brothers Services, a two-person digital solutions company focused on tailored websites, business management systems, AI applications, APIs, and cloud-supported software.
+Official website for 2Brothers Services, a two-person web and software development company in Phnom Penh, Cambodia, focused on tailored business websites, business management systems, AI applications, APIs, and cloud-supported software.
+
+**Live site:** [2brothers-services.vercel.app](https://2brothers-services.vercel.app)
 
 ## Stack
 
