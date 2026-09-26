@@ -87,6 +87,13 @@ export default function ProjectCard({ project }: { project: Project }) {
 
   const availability = getProjectAvailability(project);
 
+  const primaryLink =
+    availability.canViewLive && project.liveUrl
+      ? { href: project.liveUrl, label: "Live demo" }
+      : availability.canViewSource && project.githubUrl
+        ? { href: project.githubUrl, label: "Source" }
+        : null;
+
   const close = useCallback(() => setOpen(false), []);
 
   // Dialog behaviour: scroll lock, focus move/restore, Escape, focus trap.
@@ -215,13 +222,26 @@ export default function ProjectCard({ project }: { project: Project }) {
 
       <div className="mt-auto flex items-center justify-between px-5 pb-5">
         <span className="text-xs text-fgFaint">{project.role}</span>
-        <span
-          aria-hidden="true"
-          className="pointer-events-none inline-flex items-center gap-1 font-medium text-lime"
-        >
-          Details
-          <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-        </span>
+        {primaryLink ? (
+          <a
+            href={primaryLink.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative z-10 inline-flex items-center gap-1 text-sm font-medium text-lime hover:underline"
+          >
+            {primaryLink.label}
+            <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
+            <span className="sr-only"> for {project.name} (opens in a new tab)</span>
+          </a>
+        ) : (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none inline-flex items-center gap-1 font-medium text-lime"
+          >
+            Details
+            <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+          </span>
+        )}
       </div>
 
       {mounted
