@@ -34,7 +34,7 @@ jobs:
             raw_message="Manual workflow run"
           fi
           escaped_message=$(printf '%s' "$raw_message" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g')
-          text=$(printf '<b>EduCore - Push Notification</b>\n\nRepository: %s\nBranch: %s\nAuthor: %s\nCommit: <a href="%s">%s</a>\n\n%s' \
+          text=$(printf '<b>2 Brother Service Notification</b>\n\nRepository: %s\nBranch: %s\nAuthor: %s\nCommit: <a href="%s">%s</a>\n\n%s' \
             "$REPOSITORY" "$BRANCH" "$ACTOR" "$commit_url" "$short_sha" "$escaped_message")
           curl --fail-with-body --silent --show-error \
             --connect-timeout 10 \
