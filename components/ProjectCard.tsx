@@ -227,7 +227,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             href={primaryLink.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative z-10 inline-flex items-center gap-1 text-sm font-medium text-lime hover:underline"
+            className="relative z-10 -my-2 inline-flex items-center gap-1 py-2.5 text-sm font-medium text-lime hover:underline"
           >
             {primaryLink.label}
             <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />

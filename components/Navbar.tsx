@@ -18,6 +18,9 @@ const navLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
+/** Keep in sync with the panel transition duration below. */
+const MENU_ANIM_SECONDS = 0.3;
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -25,11 +28,25 @@ export default function Navbar() {
 
   const scrollTo = (href: string) => {
     const el = document.querySelector(href);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-      history.replaceState(null, "", href);
-    }
+    if (!el) return;
+
+    const wasOpen = open;
     setOpen(false);
+    // The open menu locks body scrolling, and a locked body cannot be moved by
+    // scrollIntoView, so release the lock first.
+    document.body.style.overflow = "";
+    history.replaceState(null, "", href);
+
+    const go = () => el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    if (wasOpen) {
+      // Collapsing the panel shortens the page by its own height. Scrolling
+      // while that happens lands past the target, so wait for the panel to
+      // finish closing before the document height settles.
+      window.setTimeout(go, MENU_ANIM_SECONDS * 1000 + 40);
+    } else {
+      go();
+    }
   };
 
   useEffect(() => {
@@ -144,7 +161,7 @@ export default function Navbar() {
               e.preventDefault();
               scrollTo("#contact");
             }}
-            className="group hidden items-center gap-1 rounded-md border border-lime/40 bg-transparent px-4 py-2 text-sm font-medium text-lime transition-all duration-200 hover:border-lime hover:bg-lime hover:text-bg hover:shadow-[0_0_18px_rgba(183,255,60,0.4)] sm:inline-flex"
+            className="group hidden items-center gap-1 rounded-md border border-lime/40 bg-transparent px-4 py-2.5 text-sm font-medium text-lime transition-all duration-200 hover:border-lime hover:bg-lime hover:text-bg hover:shadow-[0_0_18px_rgba(183,255,60,0.4)] sm:inline-flex"
           >
             Start a project
             <ArrowUpRight
@@ -174,7 +191,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ duration: MENU_ANIM_SECONDS, ease: "easeOut" }}
             className="overflow-hidden border-t border-line bg-bg lg:hidden"
           >
             <ul className="container-page flex flex-col gap-1 py-4">

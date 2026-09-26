@@ -36,7 +36,7 @@ export default function Projects() {
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => setActive(filter)}
-                className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
+                className={`rounded-full border px-4 py-2.5 text-sm transition-colors ${
                   isActive
                     ? "border-lime bg-lime/15 text-lime"
                     : "border-line text-fgMuted hover:border-lime/40 hover:text-fg"

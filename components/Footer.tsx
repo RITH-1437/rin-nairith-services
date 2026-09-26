@@ -51,7 +51,7 @@ export default function Footer() {
           </p>
           <a
             href="#home"
-            className="group inline-flex w-fit items-center gap-2 rounded-full border border-line px-4 py-2 text-xs text-fgMuted transition-colors hover:border-lime/50 hover:text-fg"
+              className="group inline-flex w-fit items-center gap-2 rounded-full border border-line px-4 py-3 text-xs text-fgMuted transition-colors hover:border-lime/50 hover:text-fg"
           >
             Back to top
             <ArrowUp

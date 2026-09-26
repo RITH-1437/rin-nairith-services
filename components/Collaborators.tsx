@@ -26,7 +26,7 @@ function SocialIconLink({
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       aria-label={`${name} on ${link.label}`}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-line text-fgMuted transition-colors hover:border-lime/50 hover:text-lime"
+      className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-line text-fgMuted transition-colors hover:border-lime/50 hover:text-lime"
     >
       <Icon className="h-4 w-4" aria-hidden="true" />
     </a>
@@ -119,7 +119,7 @@ export default function Collaborators() {
         </Reveal>
 
         <Reveal delay={0.16}>
-          <a href="#contact" className="link-accent mx-auto mt-8 flex w-fit items-center gap-1 text-sm font-medium">
+          <a href="#contact" className="link-accent mx-auto mt-3 flex w-fit items-center gap-1 py-2.5 text-sm font-medium">
             Work with the team
             <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
           </a>

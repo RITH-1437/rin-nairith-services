@@ -28,7 +28,7 @@ export default function ServiceCard({ service }: ServiceCardProps) {
       </ul>
       <a
         href="#contact"
-        className="mt-5 inline-flex items-center gap-1.5 text-sm text-lime"
+        className="mt-2 inline-flex items-center gap-1.5 py-3 text-sm text-lime"
         aria-label={`Request ${service.name.toLowerCase()}`}
       >
         Start with this
